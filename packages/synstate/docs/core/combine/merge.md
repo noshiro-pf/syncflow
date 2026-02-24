@@ -59,25 +59,25 @@ const keys$ = source<string>();
 
 const events$ = merge([clicks$, keys$]);
 
-const mut_history: string[] = [];
+const valueHistory: string[] = [];
 
 events$.subscribe((event_) => {
-  mut_history.push(event_);
+  valueHistory.push(event_);
 });
 
 clicks$.next('c1');
 
-assert.deepStrictEqual(mut_history, ['c1']);
+assert.deepStrictEqual(valueHistory, ['c1']);
 
 keys$.next('k1');
 
-assert.deepStrictEqual(mut_history, ['c1', 'k1']);
+assert.deepStrictEqual(valueHistory, ['c1', 'k1']);
 
 clicks$.next('c2');
 
 keys$.next('k2');
 
-assert.deepStrictEqual(mut_history, ['c1', 'k1', 'c2', 'k2']);
+assert.deepStrictEqual(valueHistory, ['c1', 'k1', 'c2', 'k2']);
 ```
 
 #### Note

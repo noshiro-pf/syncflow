@@ -4,7 +4,7 @@
 import type * as React from 'react';
 import {
   createState,
-  debounceTime,
+  debounce,
   filter,
   fromPromise,
   type InitializedObservable,
@@ -21,7 +21,7 @@ const [searchState, setSearchState] = createState('');
 const searchResults$: InitializedObservable<
   readonly Readonly<{ id: string; name: string }>[]
 > = searchState
-  .pipe(debounceTime(300))
+  .pipe(debounce(300))
   .pipe(filter((query) => query.length > 2))
   .pipe(
     switchMap((query) =>

@@ -15,6 +15,10 @@
 
 **SynState** is a lightweight, high-performance, type-safe state management library for TypeScript/JavaScript applications. Perfect for building reactive global state and event-driven systems in React, Vue, and other frameworks.
 
+"SynState" is named after "Synchronized + State." It represents a sound synchronized state through a **glitch-free**[^1] Observable implementation.
+
+[^1]: See ["How SynState solved the glitch?"](../../docs/how-synstate-solved-the-glitch.md)
+
 ## Features
 
 - 🎯 **Simple State Management**: Easy-to-use `createState` and `createReducer` for global state
@@ -24,11 +28,11 @@
 - 🚀 **Lightweight**: Minimal bundle size with only one external runtime dependency ([ts-data-forge](https://www.npmjs.com/package/ts-data-forge))
 - ⚡ **High Performance**: Optimized for fast state updates and minimal re-renders
 - 🌐 **Framework Agnostic**: Works with React, Vue, Svelte, or vanilla JavaScript
-- 🔧 **Observable-based**: Built on Observable pattern similar to RxJS, but with a completely independent implementation from scratch — not a wrapper. Offers optional advanced features like operators (`map`, `filter`, `scan`, `debounceTime`) and combinators (`merge`, `combine`)
+- 🔧 **Observable-based**: Built on Observable pattern similar to RxJS, but with a completely independent implementation from scratch — not a wrapper. Offers optional advanced features like operators (`map`, `filter`, `scan`, `debounce`) and combinators (`merge`, `combine`)
 
-## Documentation
+<!-- ## Documentation
 
-- API reference: TBD <!-- <https://noshiro-pf.github.io/synstate/> -->
+- API reference: TBD <https://noshiro-pf.github.io/synstate/> -->
 
 ## Installation
 
@@ -55,29 +59,35 @@ pnpm add synstate
 const [state, setState, { updateState, resetState, getSnapshot }] =
     createState(0);
 
-const mut_history: number[] = [];
+const stateHistory: number[] = [];
 
 // Subscribe to changes (in React components, Vue watchers, etc.)
 state.subscribe((count) => {
-    mut_history.push(count);
+    stateHistory.push(count);
 });
 
-assert.deepStrictEqual(mut_history, [0]);
+assert.deepStrictEqual(stateHistory, [0]);
+
+assert.strictEqual(getSnapshot(), 0);
 
 // Update state
 setState(1);
 
-assert.deepStrictEqual(mut_history, [0, 1]);
+assert.strictEqual(getSnapshot(), 1);
+
+assert.deepStrictEqual(stateHistory, [0, 1]);
 
 updateState((prev) => prev + 2);
 
-assert.deepStrictEqual(mut_history, [0, 1, 3]);
+assert.strictEqual(getSnapshot(), 3);
 
-assert.isTrue(getSnapshot() === 3);
+assert.deepStrictEqual(stateHistory, [0, 1, 3]);
 
 resetState();
 
-assert.isTrue(getSnapshot() === 0);
+assert.strictEqual(getSnapshot(), 0);
+
+assert.deepStrictEqual(stateHistory, [0, 1, 3, 0]);
 ```
 
 ### With React
@@ -207,55 +217,37 @@ const UserProfile = (): React.JSX.Element => {
 
 See also the [synstate-react-hooks README](../synstate-react-hooks/README.md).
 
-## Core Concepts
+## Why SynState?
 
-### State Management
+### Simple State Management, Not Complex Reactive Programming
 
-SynState provides simple, intuitive APIs for managing application state:
+SynState is a state management library for web frontends, similar to Redux, Jotai, Zustand, and MobX. It provides APIs for creating and managing global state across your application.
 
-- **`createState`**: Create state with getter/setter
-- **`createReducer`**: Create state by reducer and initial value
-- **`createBooleanState`**: Specialized state for boolean values
+Under the hood, SynState is built on Observable patterns similar to those provided by RxJS. However, unlike RxJS, which can make code harder to read with many operators and complex streams, SynState focuses on **simple, readable state management and event handling**. Most applications only need `createState`, `createReducer`, and simple operators/combinators like `combine` and `map` — clean, straightforward APIs that developers understand immediately.
 
-### Event System
+At the same time, it supports complex asynchronous processing such as `debounce` for controlling the timing of events that arrive in succession by waiting until they stop arriving, and `switchMap` for combining multiple asynchronous processing steps, allowing you to describe state management logic of varying complexity in a unified manner.
+**Advanced reactive features are optional** and only used when you actually need them (like debouncing search input). The library doesn't force you into a reactive programming mindset.
 
-Built-in event emitter for event-driven patterns:
+### Key Differences from RxJS
 
-- **`createValueEmitter`**: Create type-safe event emitters
-- **`createEventEmitter`**: Create event emitters without payload
+- **Glitch free**: While RxJS Observables suffer from a troublesome phenomenon called glitch [^1], SynState Observables are glitch-free.
+- **InitializedObservable**: Provides `InitializedObservable` which always holds an initial value, making it ideal for representing state
+- **Focus on State Management**: Designed specifically for state management, not just asynchronous event processing. SynState provides utility functions `createState`, `createReducer`, and `createBooleanState`. However, this doesn't mean it's inadequate for asynchronous event processing — it can handle asynchronous operations as elegantly as RxJS.
 
-### Observable (Optional Advanced Feature)
+### Use Cases
 
-For advanced use cases, you can use observables to build complex reactive data flows. However, most applications will only need `createState`, `createReducer`, and `createValueEmitter`.
+**Use SynState when you need:**
 
-## API Reference
+- ✅ Global state management across components
+- ✅ Event-driven communication between components
+- ✅ Type-safe event emitters
+- ✅ Redux-like state with reducers
+- ✅ Simple reactive patterns (debounce, throttle, etc.)
 
-For complex scenarios, SynState provides observable-based APIs:
+**Consider other solutions when:**
 
-### Creation Functions
-
-- `source<T>()`: Create a new observable source
-- `of(value)`: Create observable from a single value
-- `fromArray(array)`: Create observable from array
-- `fromPromise(promise)`: Create observable from promise
-- `interval(ms)`: Emit values at intervals
-- `timer(delay)`: Emit after delay
-
-### Operators
-
-- `filter(predicate)`: Filter values
-- `map(fn)`: Transform values
-- `scan(reducer, seed)`: Accumulate values
-- `debounceTime(ms)`: Debounce emissions
-- `throttleTime(ms)`: Throttle emissions
-- `skipIfNoChange()`: Skip duplicate values
-- `takeUntil(notifier)`: Complete on notifier emission
-
-### Combination
-
-- `combine(observables)`: Combine latest values from multiple sources
-- `merge(observables)`: Merge multiple streams
-- `zip(observables)`: Pair values by index
+- ❌ You only need a React component (local) state (use React hooks `useState`, `useReducer`)
+- ❌ Your app is simple enough for React Context alone
 
 ## Examples
 
@@ -290,7 +282,7 @@ const Counter = (): React.JSX.Element => {
     );
 };
 
-// Component 2 (synced automatically)
+// Component 2
 const ResetButton = (): React.JSX.Element => (
     <button
         onClick={() => {
@@ -483,7 +475,7 @@ const ItemList = (): React.JSX.Element => {
 import type * as React from 'react';
 import {
     createState,
-    debounceTime,
+    debounce,
     filter,
     fromPromise,
     type InitializedObservable,
@@ -500,7 +492,7 @@ const [searchState, setSearchState] = createState('');
 const searchResults$: InitializedObservable<
     readonly Readonly<{ id: string; name: string }>[]
 > = searchState
-    .pipe(debounceTime(300))
+    .pipe(debounce(300))
     .pipe(filter((query) => query.length > 2))
     .pipe(
         switchMap((query) =>
@@ -542,7 +534,7 @@ const SearchBox = (): React.JSX.Element => {
 ### Advanced: Event Emitter with Throttle
 
 ```tsx
-import { createEventEmitter, throttleTime } from 'synstate';
+import { createEventEmitter, throttle } from 'synstate';
 
 // Create event emitter
 const [refreshClicked, onRefreshClick] = createEventEmitter();
@@ -553,7 +545,7 @@ refreshClicked.subscribe(() => {
 });
 
 // Throttle refresh clicks to prevent rapid successive executions
-const throttledRefresh = refreshClicked.pipe(throttleTime(2000));
+const throttledRefresh = refreshClicked.pipe(throttle(2000));
 
 throttledRefresh.subscribe(() => {
     console.log('Executing refresh...');
@@ -572,38 +564,82 @@ const DataTable = (): React.JSX.Element => (
 );
 ```
 
-## Why SynState?
+## API Reference
 
-### Simple State Management, Not Complex Reactive Programming
+### State Management
 
-SynState is a state management library for web frontends, similar to Redux, Jotai, Zustand, and MobX. It provides APIs for creating and managing global state across your application.
+SynState provides simple, intuitive APIs for managing application state:
 
-Under the hood, SynState is built on Observable patterns similar to those provided by RxJS. However, unlike RxJS, which can make code harder to read with many operators and complex streams, SynState focuses on **simple, readable state management and event handling**. Most applications only need `createState`, `createReducer`, and simple operators/combinators like `combine` and `map` — clean, straightforward APIs that developers understand immediately.
+- **`createState`**: Create state with InitializedObservable and setter
+- **`createReducer`**: Create state by reducer and initial value
+- **`createBooleanState`**: Specialized state for boolean values
 
-**Advanced reactive features are optional** and only used when you actually need them (like debouncing search input). The library doesn't force you into a reactive programming mindset.
+### Event System
 
-### Key Differences from RxJS
+Built-in event emitter for event-driven patterns:
 
-- **Focus on State Management**: Designed specifically for state management, not just asynchronous event processing
-- **InitializedObservable**: Provides `InitializedObservable` which always holds an initial value, making it ideal for representing state
-- **Simpler API**: Most use cases are covered by `createState`, `createReducer`, and `createEventEmitter`
-- **Better Readability**: No need for complex operator chains in everyday code
-- **Optional Complexity**: Advanced features available to manipulate Observables when needed
+- **`createValueEmitter`**: Create type-safe event emitters
+- **`createEventEmitter`**: Create event emitters without payload
 
-### Use Cases
+### Observable APIs
 
-**Use SynState when you need:**
+For complex scenarios, SynState provides observable-based APIs:
 
-- ✅ Global state management across components
-- ✅ Event-driven communication between components
-- ✅ Type-safe event emitters
-- ✅ Redux-like state with reducers
-- ✅ Simple reactive patterns (debounce, throttle, etc.)
+#### Creation Functions
 
-**Consider other solutions when:**
+- `source<T>()`: Create a new observable source (Almost equivalent to RxJS `subject`)
+- `fromPromise(promise)`: Create observable from promise
+- `fromSubscribable()`: Create observable from any subscribable object
+- `counter(ms)`: Emit values at intervals (Almost equivalent to RxJS `interval`)
+- `timer(delay)`: Emit after delay
 
-- ❌ You need state in a React component (use React hooks `useState`, `useReducer`)
-- ❌ Your app is simple enough for React Context alone
+#### Operators
+
+- `map` variants
+    - `map(fn)`: Transform values
+    - `mapWithIndex(fn)`: Transform values with index
+    - `mapTo(value)`: Map all values to a constant
+    - `getKey(key)`: Extract property value from objects (alias: `pluck`)
+    - `attachIndex()`: Attach index to each value (alias: `withIndex`)
+    - Result/Optional
+        - `mapOptional(fn)`: Map over Optional values
+        - `mapResultOk(fn)`: Map over Result ok values
+        - `mapResultErr(fn)`: Map over Result error values
+        - `unwrapOptional()`: Unwrap Optional values to undefined
+        - `unwrapResultOk()`: Unwrap Result ok values to undefined
+        - `unwrapResultErr()`: Unwrap Result error values to undefined
+    - `mergeMap(fn)`: Map to observables and merge all (runs in parallel) (alias: `flatMap`)
+    - `switchMap(fn)`: Map to observables and switch to latest (cancels previous)
+- Filtering
+    - `filter(predicate)`: Filter values
+    - `skipIfNoChange()`: Skip duplicate values (alias: `distinctUntilChanged`)
+    - `skip(n)`: Skip first n emissions
+    - `take(n)`: Take first n emissions then complete
+    - `skipWhile(predicate)`: Skip values while predicate is true
+    - `takeWhile(predicate)`: Emit values while predicate is true, then complete
+    - `skipUntil(notifier)`: Skip values until notifier emits
+    - `takeUntil(notifier)`: Complete on notifier emission
+- Time series processing
+    - `audit(ms)`: Emit the last value after specified time window (Almost equivalent to RxJS `auditTime`)
+    - `debounce(ms)`: Debounce emissions (Almost equivalent to RxJS `debounceTime`)
+    - `throttle(ms)`: Throttle emissions (Almost equivalent to RxJS `throttleTime`)
+- `pairwise()`: Emit previous and current values as pairs
+- `scan(reducer, seed)`: Accumulate values
+- `withBuffered(observable)`: Buffer values from observable and emit with parent (alias: `withBufferedFrom`)
+- `withCurrentValueFrom(observable)`: Sample current value from another observable (alias: `withLatestFrom`)
+- `withInitialValue(value)`: Provide an initial value for uninitialized observable
+
+#### Combination
+
+- `combine(observables)`: Combine latest values from multiple sources (alias: `combineLatest`)
+- `merge(observables)`: Merge multiple streams
+- `zip(observables)`: Pair values by index
+
+#### Utilities
+
+- `isChildObservable(obs)`: Check if observable is a child observable
+- `isManagerObservable(obs)`: Check if observable is a manager observable
+- `isRootObservable(obs)`: Check if observable is a root observable
 
 ## Type Safety
 

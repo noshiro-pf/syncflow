@@ -28,21 +28,21 @@ A tuple containing the observable and the emitter function
 ```ts
 const [click$, emitClick] = createEventEmitter();
 
-const mut_clickCount = { value: 0 };
+const clickCount = { value: 0 };
 
 click$.subscribe(() => {
-  mut_clickCount.value += 1;
+  clickCount.value += 1;
 });
 
 emitClick(); // logs: Clicked!
 
-assert.deepStrictEqual(mut_clickCount.value, 1);
+assert.deepStrictEqual(clickCount.value, 1);
 
 emitClick();
 
 emitClick();
 
-assert.deepStrictEqual(mut_clickCount.value, 3);
+assert.deepStrictEqual(clickCount.value, 3);
 ```
 
 ***
@@ -75,17 +75,17 @@ A tuple containing the observable and the emitter function
 ```ts
 const [message$, emitMessage] = createValueEmitter<string>();
 
-const mut_history: string[] = [];
+const messageHistory: string[] = [];
 
 message$.subscribe((msg) => {
-  mut_history.push(msg);
+  messageHistory.push(msg);
 });
 
 emitMessage('Hello'); // logs: Hello
 
-assert.deepStrictEqual(mut_history, ['Hello']);
+assert.deepStrictEqual(messageHistory, ['Hello']);
 
 emitMessage('World');
 
-assert.deepStrictEqual(mut_history, ['Hello', 'World']);
+assert.deepStrictEqual(messageHistory, ['Hello', 'World']);
 ```

@@ -8,29 +8,35 @@ if (import.meta.vitest !== undefined) {
     const [state, setState, { updateState, resetState, getSnapshot }] =
       createState(0);
 
-    const mut_history: number[] = [];
+    const stateHistory: number[] = [];
 
     // Subscribe to changes (in React components, Vue watchers, etc.)
     state.subscribe((count) => {
-      mut_history.push(count);
+      stateHistory.push(count);
     });
 
-    assert.deepStrictEqual(mut_history, [0]);
+    assert.deepStrictEqual(stateHistory, [0]);
+
+    assert.strictEqual(getSnapshot(), 0);
 
     // Update state
     setState(1);
 
-    assert.deepStrictEqual(mut_history, [0, 1]);
+    assert.strictEqual(getSnapshot(), 1);
+
+    assert.deepStrictEqual(stateHistory, [0, 1]);
 
     updateState((prev) => prev + 2);
 
-    assert.deepStrictEqual(mut_history, [0, 1, 3]);
+    assert.strictEqual(getSnapshot(), 3);
 
-    assert.isTrue(getSnapshot() === 3);
+    assert.deepStrictEqual(stateHistory, [0, 1, 3]);
 
     resetState();
 
-    assert.isTrue(getSnapshot() === 0);
+    assert.strictEqual(getSnapshot(), 0);
+
+    assert.deepStrictEqual(stateHistory, [0, 1, 3, 0]);
 
     // embed-sample-code-ignore-below
   });

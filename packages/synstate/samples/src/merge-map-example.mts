@@ -35,10 +35,10 @@ if (import.meta.vitest !== undefined) {
         }),
       );
 
-      const mut_history: { id: number }[] = [];
+      const valueHistory: { id: number }[] = [];
 
       users$.subscribe((value) => {
-        mut_history.push(value);
+        valueHistory.push(value);
       });
 
       ids$.next(1);
@@ -51,13 +51,13 @@ if (import.meta.vitest !== undefined) {
         setTimeout(resolve, 200);
       });
 
-      assert.deepStrictEqual(mut_history.length, 3);
+      assert.deepStrictEqual(valueHistory.length, 3);
 
-      assert.isTrue(mut_history.some((u) => u.id === 1));
+      assert.isTrue(valueHistory.some((u) => u.id === 1));
 
-      assert.isTrue(mut_history.some((u) => u.id === 2));
+      assert.isTrue(valueHistory.some((u) => u.id === 2));
 
-      assert.isTrue(mut_history.some((u) => u.id === 3));
+      assert.isTrue(valueHistory.some((u) => u.id === 3));
 
       // embed-sample-code-ignore-below
     },

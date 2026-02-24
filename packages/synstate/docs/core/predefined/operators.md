@@ -20,12 +20,6 @@ Re-exports [getKey](operators/pluck.md#getkey)
 
 ***
 
-### map
-
-Re-exports [map](operators/map.md#map)
-
-***
-
 ### mapOptional
 
 Re-exports [mapOptional](operators/map-optional.md#mapoptional)

@@ -22,12 +22,12 @@ import { type TimerObservable } from '../types/index.mjs';
  *
  * const delayed$ = timer(100);
  *
- * const mut_history: number[] = [];
+ * const valueHistory: number[] = [];
  *
  * await new Promise<void>((resolve) => {
  *   delayed$.subscribe(
  *     () => {
- *       mut_history.push(1);
+ *       valueHistory.push(1);
  *     },
  *     () => {
  *       resolve();
@@ -35,7 +35,7 @@ import { type TimerObservable } from '../types/index.mjs';
  *   );
  * });
  *
- * assert.deepStrictEqual(mut_history, [1]);
+ * assert.deepStrictEqual(valueHistory, [1]);
  * ```
  */
 export const timer = (

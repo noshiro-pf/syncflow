@@ -8,15 +8,15 @@
 
 ## References
 
-### auditTime
+### audit
 
-Re-exports [auditTime](operators/audit-time.md#audittime)
+Re-exports [audit](operators/audit.md#audit)
 
 ***
 
-### debounceTime
+### debounce
 
-Re-exports [debounceTime](operators/debounce-time.md#debouncetime)
+Re-exports [debounce](operators/debounce.md#debounce)
 
 ***
 
@@ -38,9 +38,9 @@ Re-exports [flatMap](operators/merge-map.md#flatmap)
 
 ***
 
-### mapWithIndex
+### map
 
-Re-exports [mapWithIndex](operators/map-with-index.md#mapwithindex)
+Re-exports [map](operators/map.md#map)
 
 ***
 
@@ -98,9 +98,9 @@ Re-exports [takeWhile](operators/take-while.md#takewhile)
 
 ***
 
-### throttleTime
+### throttle
 
-Re-exports [throttleTime](operators/throttle-time.md#throttletime)
+Re-exports [throttle](operators/throttle.md#throttle)
 
 ***
 

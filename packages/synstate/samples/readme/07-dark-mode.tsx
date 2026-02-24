@@ -1,6 +1,5 @@
 /* eslint-disable @typescript-eslint/strict-void-return */
 /* eslint-disable import-x/no-extraneous-dependencies */
-/* eslint-disable functional/immutable-data */
 // embed-sample-code-ignore-above
 
 import * as React from 'react';

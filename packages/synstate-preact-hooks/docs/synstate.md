@@ -1324,7 +1324,7 @@ Defined in: synstate/dist/core/class/root-observable-class.d.mts:6
 
 ###### \_\_namedParameters
 
-`Readonly`\<\{ `initialValue`: `ReturnType`\<`RootObservable`\<`A`\>\[`"getSnapshot"`\]\>; \}\>
+`Readonly`\<\{ `initialValue`: `Optional`\<`A`\>; \}\>
 
 ###### Returns
 
@@ -2232,14 +2232,15 @@ withIndex
 
 ***
 
-### auditTime()
+### audit()
 
-> `const` **auditTime**: \<`A`\>(`milliSeconds`) => `KeepInitialValueOperator`\<`A`, `A`\>
+> `const` **audit**: \<`A`\>(`milliSeconds`) => `KeepInitialValueOperator`\<`A`, `A`\>
 
-Defined in: synstate/dist/core/operators/audit-time.d.mts:61
+Defined in: synstate/dist/core/operators/audit.d.mts:62
 
-Emits the last value from the source observable after a specified time window has passed.
-Unlike throttleTime which emits the first value, auditTime emits the last value.
+Ignores source values for duration milliseconds, then emits the most recent value from the source Observable, then repeats this process.
+
+Unlike `throttle` which emits the first value, `audit` emits the last value.
 
 #### Type Parameters
 
@@ -2274,20 +2275,20 @@ An operator that audits emissions from the observable
 //            |-------1000ms window------>        ^
 //
 //  Explanation:
-//  - auditTime emits the LAST value received during each time window
-//  - Unlike throttleTime (which emits the FIRST value), audit emits the LAST
+//  - audit emits the LAST value received during each time window
+//  - Unlike throttle (which emits the FIRST value), audit emits the LAST
 //  - At 0-1000ms: e1-e5 are received
 //  - At 1000ms: e5 (the last value in the window) is emitted
 //  - Useful when you want the most recent value after a burst of events
 
 const input$ = source<number>();
 
-const audited$ = input$.pipe(auditTime(200));
+const audited$ = input$.pipe(audit(200));
 
-const mut_history: number[] = [];
+const stateHistory: number[] = [];
 
 audited$.subscribe((value) => {
-  mut_history.push(value);
+  stateHistory.push(value);
 });
 
 input$.next(1);
@@ -2296,13 +2297,13 @@ input$.next(2);
 
 input$.next(3);
 
-assert.deepStrictEqual(mut_history, []);
+assert.deepStrictEqual(stateHistory, []);
 
 await new Promise((resolve) => {
   setTimeout(resolve, 250);
 });
 
-assert.deepStrictEqual(mut_history, [3]);
+assert.deepStrictEqual(stateHistory, [3]);
 
 input$.next(4);
 
@@ -2312,38 +2313,8 @@ await new Promise((resolve) => {
   setTimeout(resolve, 250);
 });
 
-assert.deepStrictEqual(mut_history, [3, 5]);
+assert.deepStrictEqual(stateHistory, [3, 5]);
 ```
-
-***
-
-### binarySearch()
-
-> `const` **binarySearch**: \<`N`\>(`sortedArray`, `x`) => `NegativeInt32` \| `Uint32`
-
-Defined in: synstate/dist/core/utils/utils.d.mts:3
-
-Returns the position where x should be inserted in a sorted array.
-
-#### Type Parameters
-
-##### N
-
-`N` *extends* `number`
-
-#### Parameters
-
-##### sortedArray
-
-readonly `N`[]
-
-##### x
-
-`N`
-
-#### Returns
-
-`NegativeInt32` \| `Uint32`
 
 ***
 
@@ -2398,30 +2369,30 @@ const age$ = source<number>();
 
 const user$ = combine([name$, age$]);
 
-const mut_history: (readonly [string, number])[] = [];
+const stateHistory: (readonly [string, number])[] = [];
 
 user$.subscribe(([name_, age]) => {
-  mut_history.push([name_, age]);
+  stateHistory.push([name_, age]);
 });
 
 name$.next('Alice'); // nothing logged (age$ hasn't emitted yet)
 
-assert.deepStrictEqual(mut_history, []);
+assert.deepStrictEqual(stateHistory, []);
 
 age$.next(25); // logs: { name: 'Alice', age: 25 }
 
-assert.deepStrictEqual(mut_history, [['Alice', 25]]);
+assert.deepStrictEqual(stateHistory, [['Alice', 25]]);
 
 name$.next('Bob'); // logs: { name: 'Bob', age: 25 }
 
-assert.deepStrictEqual(mut_history, [
+assert.deepStrictEqual(stateHistory, [
   ['Alice', 25],
   ['Bob', 25],
 ]);
 
 age$.next(30); // logs: { name: 'Bob', age: 30 }
 
-assert.deepStrictEqual(mut_history, [
+assert.deepStrictEqual(stateHistory, [
   ['Alice', 25],
   ['Bob', 25],
   ['Bob', 30],
@@ -2457,6 +2428,73 @@ Alias for `combine`.
 #### See
 
 combine
+
+***
+
+### counter()
+
+> `const` **counter**: (`intervalMilliSeconds`, `startManually?`) => `CounterObservable`
+
+Defined in: synstate/dist/core/create/counter.d.mts:45
+
+Creates an observable that emits incremental numbers at a specified interval.
+Starts with 0 immediately after subscription, then emits 1, 2, 3, ... every interval.
+
+#### Parameters
+
+##### intervalMilliSeconds
+
+`number`
+
+The interval duration in milliseconds
+
+##### startManually?
+
+`boolean`
+
+If true, waits for manual start (default: false)
+
+#### Returns
+
+`CounterObservable`
+
+An observable that emits sequential numbers
+
+#### Example
+
+```ts
+//  Timeline:
+//
+//  Time(s)   0     1     2     3     4     5
+//  tick$     0     1     2     3     4     5     ...
+//
+//  Explanation:
+//  - counter emits incrementing numbers at specified intervals
+//  - Starts at 0 and continues indefinitely
+//  - Useful for periodic tasks or animations
+
+const tick$ = counter(100);
+
+const stateHistory: number[] = [];
+
+const subscription = tick$.subscribe((count) => {
+  stateHistory.push(count);
+});
+
+await new Promise((resolve) => {
+  setTimeout(resolve, 350);
+});
+
+subscription.unsubscribe();
+
+assert.isTrue(Arr.isArrayAtLeastLength(stateHistory, 3));
+
+assert.deepStrictEqual(stateHistory[0], 0);
+
+assert.deepStrictEqual(stateHistory[1], 1);
+
+assert.deepStrictEqual(stateHistory[2], 2);
+```
 
 ***
 
@@ -2527,28 +2565,28 @@ A tuple containing the observable and the emitter function
 ```ts
 const [message$, emitMessage] = createValueEmitter<string>();
 
-const mut_history: string[] = [];
+const stateHistory: string[] = [];
 
 message$.subscribe((msg) => {
-  mut_history.push(msg);
+  stateHistory.push(msg);
 });
 
 emitMessage('Hello'); // logs: Hello
 
-assert.deepStrictEqual(mut_history, ['Hello']);
+assert.deepStrictEqual(stateHistory, ['Hello']);
 
 emitMessage('World');
 
-assert.deepStrictEqual(mut_history, ['Hello', 'World']);
+assert.deepStrictEqual(stateHistory, ['Hello', 'World']);
 ```
 
 ***
 
-### debounceTime()
+### debounce()
 
-> `const` **debounceTime**: \<`A`\>(`milliSeconds`) => `KeepInitialValueOperator`\<`A`, `A`\>
+> `const` **debounce**: \<`A`\>(`milliSeconds`) => `KeepInitialValueOperator`\<`A`, `A`\>
 
-Defined in: synstate/dist/core/operators/debounce-time.d.mts:50
+Defined in: synstate/dist/core/operators/debounce.d.mts:50
 
 Delays emissions from the source observable until a specified time has passed without another emission.
 Useful for handling user input events like typing or scrolling.
@@ -2593,12 +2631,12 @@ An operator that debounces the observable
 
 const input$ = source<string>();
 
-const debounced$ = input$.pipe(debounceTime(300));
+const debounced$ = input$.pipe(debounce(300));
 
-const mut_history: string[] = [];
+const stateHistory: string[] = [];
 
 debounced$.subscribe((value) => {
-  mut_history.push(value);
+  stateHistory.push(value);
 });
 
 input$.next('h');
@@ -2613,7 +2651,7 @@ await new Promise((resolve) => {
   setTimeout(resolve, 400);
 });
 
-assert.deepStrictEqual(mut_history, ['hello']);
+assert.deepStrictEqual(stateHistory, ['hello']);
 ```
 
 ***
@@ -2682,73 +2720,6 @@ mergeMap
 
 ***
 
-### fromArray()
-
-> `const` **fromArray**: \<`A`\>(`values`, `startManually?`) => `FromArrayObservable`\<`A`\>
-
-Defined in: synstate/dist/core/create/from-array.d.mts:38
-
-Creates an observable that emits all values from an array sequentially, then completes.
-
-#### Type Parameters
-
-##### A
-
-`A`
-
-The type of array elements
-
-#### Parameters
-
-##### values
-
-readonly `A`[]
-
-The array of values to emit
-
-##### startManually?
-
-`boolean`
-
-If true, waits for manual start (default: false)
-
-#### Returns
-
-`FromArrayObservable`\<`A`\>
-
-An observable that emits array values
-
-#### Example
-
-```ts
-//  Timeline:
-//
-//  nums$     1     2     3     | (completes)
-//
-//  Explanation:
-//  - fromArray creates an observable from an array
-//  - Emits all values synchronously, then completes
-
-const nums$ = fromArray([1, 2, 3]);
-
-const mut_history: number[] = [];
-
-await new Promise<void>((resolve) => {
-  nums$.subscribe(
-    (x) => {
-      mut_history.push(x);
-    },
-    () => {
-      resolve();
-    },
-  );
-});
-
-assert.deepStrictEqual(mut_history, [1, 2, 3]);
-```
-
-***
-
 ### fromPromise()
 
 > `const` **fromPromise**: \<`A`, `E`\>(`promise`) => `FromPromiseObservable`\<`A`, `E`\>
@@ -2804,13 +2775,13 @@ const fetchData = async (): Promise<{ value: number }> => ({ value: 42 });
 
 const data$ = fromPromise(fetchData());
 
-const mut_history: { value: number }[] = [];
+const stateHistory: { value: number }[] = [];
 
 await new Promise<void>((resolve) => {
   data$.subscribe(
     (result) => {
       if (Result.isOk(result)) {
-        mut_history.push(result.value);
+        stateHistory.push(result.value);
       }
     },
     () => {
@@ -2819,7 +2790,7 @@ await new Promise<void>((resolve) => {
   );
 });
 
-assert.deepStrictEqual(mut_history, [{ value: 42 }]);
+assert.deepStrictEqual(stateHistory, [{ value: 42 }]);
 ```
 
 ***
@@ -2893,13 +2864,13 @@ const customSubscribable = {
 
 const observable$ = fromSubscribable<number>(customSubscribable);
 
-const mut_history: number[] = [];
+const stateHistory: number[] = [];
 
 await new Promise<void>((resolve) => {
   observable$.subscribe(
     (result) => {
       if (Result.isOk(result)) {
-        mut_history.push(result.value);
+        stateHistory.push(result.value);
       }
     },
     () => {
@@ -2908,7 +2879,7 @@ await new Promise<void>((resolve) => {
   );
 });
 
-assert.deepStrictEqual(mut_history, [1, 2, 3]);
+assert.deepStrictEqual(stateHistory, [1, 2, 3]);
 ```
 
 ***
@@ -2944,91 +2915,6 @@ Alias for `pluck`.
 #### See
 
 pluck
-
-***
-
-### halfInt()
-
-> `const` **halfInt**: (`x`) => `SafeInt`
-
-Defined in: synstate/dist/core/utils/utils.d.mts:1
-
-#### Parameters
-
-##### x
-
-`SafeInt`
-
-#### Returns
-
-`SafeInt`
-
-***
-
-### interval()
-
-> `const` **interval**: (`milliSeconds`, `startManually?`) => `IntervalObservable`
-
-Defined in: synstate/dist/core/create/interval.d.mts:45
-
-Creates an observable that emits incremental numbers at a specified interval.
-Starts with 0 immediately after subscription, then emits 1, 2, 3, ... every interval.
-
-#### Parameters
-
-##### milliSeconds
-
-`number`
-
-The interval duration in milliseconds
-
-##### startManually?
-
-`boolean`
-
-If true, waits for manual start (default: false)
-
-#### Returns
-
-`IntervalObservable`
-
-An observable that emits sequential numbers
-
-#### Example
-
-```ts
-//  Timeline:
-//
-//  Time(s)   0     1     2     3     4     5
-//  tick$     0     1     2     3     4     5     ...
-//
-//  Explanation:
-//  - interval emits incrementing numbers at specified intervals
-//  - Starts at 0 and continues indefinitely
-//  - Useful for periodic tasks or animations
-
-const tick$ = interval(100);
-
-const mut_history: number[] = [];
-
-const subscription = tick$.subscribe((count) => {
-  mut_history.push(count);
-});
-
-await new Promise((resolve) => {
-  setTimeout(resolve, 350);
-});
-
-subscription.unsubscribe();
-
-assert.isTrue(Arr.isArrayAtLeastLength(mut_history, 3));
-
-assert.deepStrictEqual(mut_history[0], 0);
-
-assert.deepStrictEqual(mut_history[1], 1);
-
-assert.deepStrictEqual(mut_history[2], 2);
-```
 
 ***
 
@@ -3104,47 +2990,13 @@ Defined in: synstate/dist/core/types/observable.d.mts:70
 
 ***
 
-### issueObservableId()
-
-> `const` **issueObservableId**: () => `ObservableId`
-
-Defined in: synstate/dist/core/utils/id-maker.d.mts:2
-
-#### Returns
-
-`ObservableId`
-
-***
-
-### issueSubscriberId()
-
-> `const` **issueSubscriberId**: () => `SubscriberId`
-
-Defined in: synstate/dist/core/utils/id-maker.d.mts:3
-
-#### Returns
-
-`SubscriberId`
-
-***
-
-### issueUpdaterSymbol()
-
-> `const` **issueUpdaterSymbol**: () => `UpdaterSymbol`
-
-Defined in: synstate/dist/core/utils/id-maker.d.mts:4
-
-#### Returns
-
-`UpdaterSymbol`
-
-***
-
 ### map()
 
 > `const` **map**: \<`A`, `B`\>(`mapFn`) => `KeepInitialValueOperator`\<`A`, `B`\>
 
-Defined in: synstate/dist/core/predefined/operators/map.d.mts:2
+Defined in: synstate/dist/core/operators/map.d.mts:40
+
+Transforms each value emitted by the source using a mapping function that also receives the emission index.
 
 #### Type Parameters
 
@@ -3152,19 +3004,58 @@ Defined in: synstate/dist/core/predefined/operators/map.d.mts:2
 
 `A`
 
+The type of values from the source
+
 ##### B
 
 `B`
+
+The type of mapped values
 
 #### Parameters
 
 ##### mapFn
 
-(`x`) => `B`
+(`x`, `index`) => `B`
+
+A function that maps each value (receives value and index)
 
 #### Returns
 
 `KeepInitialValueOperator`\<`A`, `B`\>
+
+An operator that maps values with index
+
+#### Example
+
+```ts
+//  Timeline:
+//
+//  num$      "a"      "b"      "c"
+//  indexed$  "0: a"   "1: b"   "2: c"
+//
+//  Explanation:
+//  - mapWithIndex transforms each value along with its index
+//  - Index starts at 0 and increments with each emission
+
+const num$ = source<string>();
+
+const indexed$ = num$.pipe(mapWithIndex((x, i) => `${i}: ${x}`));
+
+const stateHistory: string[] = [];
+
+indexed$.subscribe((s) => {
+  stateHistory.push(s);
+});
+
+num$.next('a'); // 0: a
+
+num$.next('b'); // 1: b
+
+num$.next('c'); // 2: c
+
+assert.deepStrictEqual(stateHistory, ['0: a', '1: b', '2: c']);
+```
 
 ***
 
@@ -3280,93 +3171,6 @@ Defined in: synstate/dist/core/predefined/operators/map-to.d.mts:2
 
 ***
 
-### mapWithIndex()
-
-> `const` **mapWithIndex**: \<`A`, `B`\>(`mapFn`) => `KeepInitialValueOperator`\<`A`, `B`\>
-
-Defined in: synstate/dist/core/operators/map-with-index.d.mts:40
-
-Transforms each value emitted by the source using a mapping function that also receives the emission index.
-
-#### Type Parameters
-
-##### A
-
-`A`
-
-The type of values from the source
-
-##### B
-
-`B`
-
-The type of mapped values
-
-#### Parameters
-
-##### mapFn
-
-(`x`, `index`) => `B`
-
-A function that maps each value (receives value and index)
-
-#### Returns
-
-`KeepInitialValueOperator`\<`A`, `B`\>
-
-An operator that maps values with index
-
-#### Example
-
-```ts
-//  Timeline:
-//
-//  num$      "a"      "b"      "c"
-//  indexed$  "0: a"   "1: b"   "2: c"
-//
-//  Explanation:
-//  - mapWithIndex transforms each value along with its index
-//  - Index starts at 0 and increments with each emission
-
-const num$ = source<string>();
-
-const indexed$ = num$.pipe(mapWithIndex((x, i) => `${i}: ${x}`));
-
-const mut_history: string[] = [];
-
-indexed$.subscribe((s) => {
-  mut_history.push(s);
-});
-
-num$.next('a'); // 0: a
-
-num$.next('b'); // 1: b
-
-num$.next('c'); // 2: c
-
-assert.deepStrictEqual(mut_history, ['0: a', '1: b', '2: c']);
-```
-
-***
-
-### maxDepth()
-
-> `const` **maxDepth**: (`parents`) => `number`
-
-Defined in: synstate/dist/core/utils/max-depth.d.mts:2
-
-#### Parameters
-
-##### parents
-
-readonly `Observable`\<`unknown`\>[]
-
-#### Returns
-
-`number`
-
-***
-
 ### merge()
 
 > `const` **merge**: \<`OS`\>(`parents`) => `MergeObservableRefined`\<`OS`\>
@@ -3418,25 +3222,25 @@ const keys$ = source<string>();
 
 const events$ = merge([clicks$, keys$]);
 
-const mut_history: string[] = [];
+const stateHistory: string[] = [];
 
 events$.subscribe((event_) => {
-  mut_history.push(event_);
+  stateHistory.push(event_);
 });
 
 clicks$.next('c1');
 
-assert.deepStrictEqual(mut_history, ['c1']);
+assert.deepStrictEqual(stateHistory, ['c1']);
 
 keys$.next('k1');
 
-assert.deepStrictEqual(mut_history, ['c1', 'k1']);
+assert.deepStrictEqual(stateHistory, ['c1', 'k1']);
 
 clicks$.next('c2');
 
 keys$.next('k2');
 
-assert.deepStrictEqual(mut_history, ['c1', 'k1', 'c2', 'k2']);
+assert.deepStrictEqual(stateHistory, ['c1', 'k1', 'c2', 'k2']);
 ```
 
 #### Note
@@ -3515,10 +3319,10 @@ const users$ = ids$.pipe(
   }),
 );
 
-const mut_history: { id: number }[] = [];
+const stateHistory: { id: number }[] = [];
 
 users$.subscribe((value) => {
-  mut_history.push(value);
+  stateHistory.push(value);
 });
 
 ids$.next(1);
@@ -3531,86 +3335,19 @@ await new Promise((resolve) => {
   setTimeout(resolve, 200);
 });
 
-assert.deepStrictEqual(mut_history.length, 3);
+assert.deepStrictEqual(stateHistory.length, 3);
 
-assert.isTrue(mut_history.some((u) => u.id === 1));
+assert.isTrue(stateHistory.some((u) => u.id === 1));
 
-assert.isTrue(mut_history.some((u) => u.id === 2));
+assert.isTrue(stateHistory.some((u) => u.id === 2));
 
-assert.isTrue(mut_history.some((u) => u.id === 3));
+assert.isTrue(stateHistory.some((u) => u.id === 3));
 ```
 
 #### Note
 
 To improve code readability, consider using `createState` instead of `mergeMap`,
 subscribing to `parentObservable` and calling `setState` within it.
-
-***
-
-### of()
-
-> `const` **of**: \<`A`\>(`value`, `startManually?`) => `OfObservable`\<`A`\>
-
-Defined in: synstate/dist/core/create/of.d.mts:38
-
-Creates an observable that emits a single value and then completes.
-
-#### Type Parameters
-
-##### A
-
-`A`
-
-The type of the value
-
-#### Parameters
-
-##### value
-
-`A`
-
-The value to emit
-
-##### startManually?
-
-`boolean`
-
-If true, waits for manual start (default: false)
-
-#### Returns
-
-`OfObservable`\<`A`\>
-
-An observable that emits the value
-
-#### Example
-
-```ts
-//  Timeline:
-//
-//  num$    42  | (completes immediately)
-//
-//  Explanation:
-//  - of creates an observable that emits a single value, then completes
-//  - Useful for converting a static value into an observable
-
-const num$ = of(42);
-
-const mut_history: number[] = [];
-
-await new Promise<void>((resolve) => {
-  num$.subscribe(
-    (x) => {
-      mut_history.push(x);
-    },
-    () => {
-      resolve();
-    },
-  );
-});
-
-assert.deepStrictEqual(mut_history, [42]);
-```
 
 ***
 
@@ -3654,30 +3391,30 @@ const num$ = source<number>();
 
 const pairs$ = num$.pipe(pairwise());
 
-const mut_history: (readonly [number, number])[] = [];
+const stateHistory: (readonly [number, number])[] = [];
 
 pairs$.subscribe(([prev, curr]) => {
-  mut_history.push([prev, curr]);
+  stateHistory.push([prev, curr]);
 });
 
 num$.next(1); // nothing logged
 
-assert.deepStrictEqual(mut_history, []);
+assert.deepStrictEqual(stateHistory, []);
 
 num$.next(2); // logs: 1, 2
 
-assert.deepStrictEqual(mut_history, [[1, 2]]);
+assert.deepStrictEqual(stateHistory, [[1, 2]]);
 
 num$.next(3); // logs: 2, 3
 
-assert.deepStrictEqual(mut_history, [
+assert.deepStrictEqual(stateHistory, [
   [1, 2],
   [2, 3],
 ]);
 
 num$.next(4); // logs: 3, 4
 
-assert.deepStrictEqual(mut_history, [
+assert.deepStrictEqual(stateHistory, [
   [1, 2],
   [2, 3],
   [3, 4],
@@ -3776,25 +3513,25 @@ const num$ = source<number>();
 
 const sum$ = num$.pipe(scan((acc, curr) => acc + curr, 0));
 
-const mut_history: number[] = [];
+const stateHistory: number[] = [];
 
 sum$.subscribe((x) => {
-  mut_history.push(x);
+  stateHistory.push(x);
 });
 
-assert.deepStrictEqual(mut_history, [0]);
+assert.deepStrictEqual(stateHistory, [0]);
 
 num$.next(1); // logs: 1
 
-assert.deepStrictEqual(mut_history, [0, 1]);
+assert.deepStrictEqual(stateHistory, [0, 1]);
 
 num$.next(2); // logs: 3
 
-assert.deepStrictEqual(mut_history, [0, 1, 3]);
+assert.deepStrictEqual(stateHistory, [0, 1, 3]);
 
 num$.next(3); // logs: 6
 
-assert.deepStrictEqual(mut_history, [0, 1, 3, 6]);
+assert.deepStrictEqual(stateHistory, [0, 1, 3, 6]);
 ```
 
 ***
@@ -3871,29 +3608,29 @@ const num$ = source<number>();
 
 const distinct$ = num$.pipe(skipIfNoChange());
 
-const mut_history: number[] = [];
+const stateHistory: number[] = [];
 
 distinct$.subscribe((x) => {
-  mut_history.push(x);
+  stateHistory.push(x);
 });
 
 num$.next(1); // logs: 1
 
-assert.deepStrictEqual(mut_history, [1]);
+assert.deepStrictEqual(stateHistory, [1]);
 
 num$.next(1); // nothing logged
 
-assert.deepStrictEqual(mut_history, [1]);
+assert.deepStrictEqual(stateHistory, [1]);
 
 num$.next(2); // logs: 2
 
-assert.deepStrictEqual(mut_history, [1, 2]);
+assert.deepStrictEqual(stateHistory, [1, 2]);
 
 num$.next(2); // nothing logged
 
 num$.next(3); // logs: 3
 
-assert.deepStrictEqual(mut_history, [1, 2, 3]);
+assert.deepStrictEqual(stateHistory, [1, 2, 3]);
 ```
 
 ***
@@ -3949,27 +3686,27 @@ const [startNotifier, start_] = createEventEmitter();
 
 const skipped$ = num$.pipe(skipUntil(startNotifier));
 
-const mut_history: number[] = [];
+const stateHistory: number[] = [];
 
 skipped$.subscribe((x) => {
-  mut_history.push(x);
+  stateHistory.push(x);
 });
 
 num$.next(1); // nothing logged
 
 num$.next(2); // nothing logged
 
-assert.deepStrictEqual(mut_history, []);
+assert.deepStrictEqual(stateHistory, []);
 
 start_();
 
 num$.next(4); // logs: 4
 
-assert.deepStrictEqual(mut_history, [4]);
+assert.deepStrictEqual(stateHistory, [4]);
 
 num$.next(5); // logs: 5
 
-assert.deepStrictEqual(mut_history, [4, 5]);
+assert.deepStrictEqual(stateHistory, [4, 5]);
 ```
 
 ***
@@ -4023,10 +3760,10 @@ const num$ = source<number>();
 
 const skipped$ = num$.pipe(skipWhile((x) => x < 5));
 
-const mut_history: number[] = [];
+const stateHistory: number[] = [];
 
 skipped$.subscribe((x) => {
-  mut_history.push(x);
+  stateHistory.push(x);
 });
 
 num$.next(1); // nothing logged
@@ -4035,30 +3772,16 @@ num$.next(2); // nothing logged
 
 num$.next(5); // logs: 5
 
-assert.deepStrictEqual(mut_history, [5]);
+assert.deepStrictEqual(stateHistory, [5]);
 
 num$.next(6); // logs: 6
 
-assert.deepStrictEqual(mut_history, [5, 6]);
+assert.deepStrictEqual(stateHistory, [5, 6]);
 
 num$.next(7); // logs: 7
 
-assert.deepStrictEqual(mut_history, [5, 6, 7]);
+assert.deepStrictEqual(stateHistory, [5, 6, 7]);
 ```
-
-***
-
-### subject
-
-> `const` **subject**: *typeof* [`source`](#source)
-
-Defined in: synstate/dist/core/create/source.d.mts:47
-
-Alias for `source`. Creates a new Observable source.
-
-#### See
-
-source
 
 ***
 
@@ -4131,10 +3854,10 @@ const results$ = searchQuery$.pipe(
   }),
 );
 
-const mut_history: string[][] = [];
+const stateHistory: string[][] = [];
 
 results$.subscribe((value) => {
-  mut_history.push(value);
+  stateHistory.push(value);
 });
 
 searchQuery$.next('a');
@@ -4147,7 +3870,7 @@ await new Promise((resolve) => {
   setTimeout(resolve, 200);
 });
 
-assert.deepStrictEqual(mut_history, [['abc']]);
+assert.deepStrictEqual(stateHistory, [['abc']]);
 ```
 
 #### Note
@@ -4232,25 +3955,25 @@ const [stopNotifier, stop_] = createEventEmitter();
 
 const limited$ = num$.pipe(takeUntil(stopNotifier));
 
-const mut_history: number[] = [];
+const stateHistory: number[] = [];
 
 limited$.subscribe((x) => {
-  mut_history.push(x);
+  stateHistory.push(x);
 });
 
 num$.next(1); // logs: 1
 
-assert.deepStrictEqual(mut_history, [1]);
+assert.deepStrictEqual(stateHistory, [1]);
 
 num$.next(2); // logs: 2
 
-assert.deepStrictEqual(mut_history, [1, 2]);
+assert.deepStrictEqual(stateHistory, [1, 2]);
 
 stop_();
 
 num$.next(3); // nothing logged (completed)
 
-assert.deepStrictEqual(mut_history, [1, 2]);
+assert.deepStrictEqual(stateHistory, [1, 2]);
 ```
 
 ***
@@ -4303,36 +4026,36 @@ const num$ = source<number>();
 
 const taken$ = num$.pipe(takeWhile((x) => x < 5));
 
-const mut_history: number[] = [];
+const stateHistory: number[] = [];
 
 taken$.subscribe((x) => {
-  mut_history.push(x);
+  stateHistory.push(x);
 });
 
 num$.next(1); // logs: 1
 
-assert.deepStrictEqual(mut_history, [1]);
+assert.deepStrictEqual(stateHistory, [1]);
 
 num$.next(2); // logs: 2
 
-assert.deepStrictEqual(mut_history, [1, 2]);
+assert.deepStrictEqual(stateHistory, [1, 2]);
 
 num$.next(5); // nothing logged (completes)
 
-assert.deepStrictEqual(mut_history, [1, 2]);
+assert.deepStrictEqual(stateHistory, [1, 2]);
 
 num$.next(6); // nothing logged (already completed)
 
-assert.deepStrictEqual(mut_history, [1, 2]);
+assert.deepStrictEqual(stateHistory, [1, 2]);
 ```
 
 ***
 
-### throttleTime()
+### throttle()
 
-> `const` **throttleTime**: \<`A`\>(`milliSeconds`) => `KeepInitialValueOperator`\<`A`, `A`\>
+> `const` **throttle**: \<`A`\>(`milliSeconds`) => `KeepInitialValueOperator`\<`A`, `A`\>
 
-Defined in: synstate/dist/core/operators/throttle-time.d.mts:61
+Defined in: synstate/dist/core/operators/throttle.d.mts:61
 
 Emits the first value, then ignores subsequent values for a specified duration.
 After the duration, the next emission is allowed through.
@@ -4370,7 +4093,7 @@ An operator that throttles emissions
 //             |-------1000ms------>       |------1000ms------>    |------1000ms------>
 //
 //  Explanation:
-//  - throttleTime emits the first value immediately, then ignores subsequent values
+//  - throttle emits the first value immediately, then ignores subsequent values
 //    for the specified duration (1000ms)
 //  - At 0ms: e1 is emitted immediately
 //  - At 100-300ms: e2, e3, e4 are ignored (within 1000ms window)
@@ -4380,17 +4103,17 @@ An operator that throttles emissions
 
 const scroll$ = source<number>();
 
-const throttled$ = scroll$.pipe(throttleTime(200));
+const throttled$ = scroll$.pipe(throttle(200));
 
-const mut_history: number[] = [];
+const stateHistory: number[] = [];
 
 throttled$.subscribe((value) => {
-  mut_history.push(value);
+  stateHistory.push(value);
 });
 
 scroll$.next(1);
 
-assert.deepStrictEqual(mut_history, [1]);
+assert.deepStrictEqual(stateHistory, [1]);
 
 await new Promise((resolve) => {
   setTimeout(resolve, 50);
@@ -4400,7 +4123,7 @@ scroll$.next(2);
 
 scroll$.next(3);
 
-assert.deepStrictEqual(mut_history, [1]);
+assert.deepStrictEqual(stateHistory, [1]);
 
 await new Promise((resolve) => {
   setTimeout(resolve, 200);
@@ -4408,7 +4131,7 @@ await new Promise((resolve) => {
 
 scroll$.next(4);
 
-assert.deepStrictEqual(mut_history, [1, 4]);
+assert.deepStrictEqual(stateHistory, [1, 4]);
 ```
 
 ***
@@ -4455,12 +4178,12 @@ An observable that emits after delay
 
 const delayed$ = timer(100);
 
-const mut_history: number[] = [];
+const stateHistory: number[] = [];
 
 await new Promise<void>((resolve) => {
   delayed$.subscribe(
     () => {
-      mut_history.push(1);
+      stateHistory.push(1);
     },
     () => {
       resolve();
@@ -4468,36 +4191,8 @@ await new Promise<void>((resolve) => {
   );
 });
 
-assert.deepStrictEqual(mut_history, [1]);
+assert.deepStrictEqual(stateHistory, [1]);
 ```
-
-***
-
-### toSubscriber()
-
-> `const` **toSubscriber**: \<`A`\>(`onNext`, `onComplete?`) => `Subscriber`\<`A`\>
-
-Defined in: synstate/dist/core/utils/observable-utils.d.mts:2
-
-#### Type Parameters
-
-##### A
-
-`A`
-
-#### Parameters
-
-##### onNext
-
-(`v`) => `void`
-
-##### onComplete?
-
-() => `void`
-
-#### Returns
-
-`Subscriber`\<`A`\>
 
 ***
 
@@ -4647,10 +4342,10 @@ const trigger$ = source<number>();
 
 const result$ = trigger$.pipe(withBufferedFrom(data$));
 
-const mut_history: (readonly [number, readonly string[]])[] = [];
+const stateHistory: (readonly [number, readonly string[]])[] = [];
 
 result$.subscribe(([triggerValue, bufferedData]) => {
-  mut_history.push([triggerValue, bufferedData]);
+  stateHistory.push([triggerValue, bufferedData]);
 });
 
 data$.next('a');
@@ -4659,13 +4354,13 @@ data$.next('b');
 
 trigger$.next(1);
 
-assert.deepStrictEqual(mut_history, [[1, ['a', 'b']]]);
+assert.deepStrictEqual(stateHistory, [[1, ['a', 'b']]]);
 
 data$.next('c');
 
 trigger$.next(2);
 
-assert.deepStrictEqual(mut_history, [
+assert.deepStrictEqual(stateHistory, [
   [1, ['a', 'b']],
   [2, ['c']],
 ]);
@@ -4731,27 +4426,27 @@ const age$ = source<number>();
 
 const result$ = name$.pipe(withCurrentValueFrom(age$));
 
-const mut_history: (readonly [string, number])[] = [];
+const stateHistory: (readonly [string, number])[] = [];
 
 result$.subscribe(([name_, currentAge]) => {
-  mut_history.push([name_, currentAge]);
+  stateHistory.push([name_, currentAge]);
 });
 
 name$.next('Alice'); // nothing logged (age$ hasn't emitted)
 
-assert.deepStrictEqual(mut_history, []);
+assert.deepStrictEqual(stateHistory, []);
 
 age$.next(25);
 
 name$.next('Bob'); // logs: Bob is 25 years old
 
-assert.deepStrictEqual(mut_history, [['Bob', 25]]);
+assert.deepStrictEqual(stateHistory, [['Bob', 25]]);
 
 age$.next(30);
 
 name$.next('Charlie'); // logs: Charlie is 30 years old
 
-assert.deepStrictEqual(mut_history, [
+assert.deepStrictEqual(stateHistory, [
   ['Bob', 25],
   ['Charlie', 30],
 ]);
@@ -4834,21 +4529,21 @@ const num$ = source<number>();
 
 const initialized$ = num$.pipe(withInitialValue(0));
 
-const mut_history: number[] = [];
+const stateHistory: number[] = [];
 
 initialized$.subscribe((x) => {
-  mut_history.push(x);
+  stateHistory.push(x);
 });
 
-assert.deepStrictEqual(mut_history, [0]);
+assert.deepStrictEqual(stateHistory, [0]);
 
 num$.next(1); // logs: 1
 
-assert.deepStrictEqual(mut_history, [0, 1]);
+assert.deepStrictEqual(stateHistory, [0, 1]);
 
 num$.next(2); // logs: 2
 
-assert.deepStrictEqual(mut_history, [0, 1, 2]);
+assert.deepStrictEqual(stateHistory, [0, 1, 2]);
 ```
 
 ***
@@ -4939,12 +4634,12 @@ const numbers$ = fromArray([1, 2, 3]);
 
 const zipped$ = zip([letters$, numbers$]);
 
-const mut_history: (readonly [string, number])[] = [];
+const stateHistory: (readonly [string, number])[] = [];
 
 await new Promise<void>((resolve) => {
   zipped$.subscribe(
     ([letter, num]) => {
-      mut_history.push([letter, num]);
+      stateHistory.push([letter, num]);
     },
     () => {
       resolve();
@@ -4952,7 +4647,7 @@ await new Promise<void>((resolve) => {
   );
 });
 
-assert.deepStrictEqual(mut_history, [
+assert.deepStrictEqual(stateHistory, [
   ['a', 1],
   ['b', 2],
   ['c', 3],
@@ -5016,29 +4711,29 @@ const num$ = source<number>();
 
 const even$ = num$.pipe(filter((x) => x % 2 === 0));
 
-const mut_history: number[] = [];
+const stateHistory: number[] = [];
 
 even$.subscribe((x) => {
-  mut_history.push(x);
+  stateHistory.push(x);
 });
 
 num$.next(1); // nothing logged
 
 num$.next(2); // logs: 2
 
-assert.deepStrictEqual(mut_history, [2]);
+assert.deepStrictEqual(stateHistory, [2]);
 
 num$.next(3); // nothing logged
 
 num$.next(4); // logs: 4
 
-assert.deepStrictEqual(mut_history, [2, 4]);
+assert.deepStrictEqual(stateHistory, [2, 4]);
 
 num$.next(5);
 
 num$.next(6);
 
-assert.deepStrictEqual(mut_history, [2, 4, 6]);
+assert.deepStrictEqual(stateHistory, [2, 4, 6]);
 ```
 
 #### Call Signature
@@ -5088,29 +4783,29 @@ const num$ = source<number>();
 
 const even$ = num$.pipe(filter((x) => x % 2 === 0));
 
-const mut_history: number[] = [];
+const stateHistory: number[] = [];
 
 even$.subscribe((x) => {
-  mut_history.push(x);
+  stateHistory.push(x);
 });
 
 num$.next(1); // nothing logged
 
 num$.next(2); // logs: 2
 
-assert.deepStrictEqual(mut_history, [2]);
+assert.deepStrictEqual(stateHistory, [2]);
 
 num$.next(3); // nothing logged
 
 num$.next(4); // logs: 4
 
-assert.deepStrictEqual(mut_history, [2, 4]);
+assert.deepStrictEqual(stateHistory, [2, 4]);
 
 num$.next(5);
 
 num$.next(6);
 
-assert.deepStrictEqual(mut_history, [2, 4, 6]);
+assert.deepStrictEqual(stateHistory, [2, 4, 6]);
 ```
 
 ***
@@ -5160,23 +4855,23 @@ A SourceObservable that can emit values via `.next()` method
 
 const count$ = source<number>();
 
-const mut_history: number[] = [];
+const stateHistory: number[] = [];
 
 count$.subscribe((value) => {
-  mut_history.push(value);
+  stateHistory.push(value);
 });
 
 count$.next(1); // logs: 1
 
-assert.deepStrictEqual(mut_history, [1]);
+assert.deepStrictEqual(stateHistory, [1]);
 
 count$.next(2); // logs: 2
 
-assert.deepStrictEqual(mut_history, [1, 2]);
+assert.deepStrictEqual(stateHistory, [1, 2]);
 
 count$.next(3); // logs: 3
 
-assert.deepStrictEqual(mut_history, [1, 2, 3]);
+assert.deepStrictEqual(stateHistory, [1, 2, 3]);
 ```
 
 #### Call Signature
@@ -5216,21 +4911,21 @@ A SourceObservable that can emit values via `.next()` method
 
 const count$ = source<number>();
 
-const mut_history: number[] = [];
+const stateHistory: number[] = [];
 
 count$.subscribe((value) => {
-  mut_history.push(value);
+  stateHistory.push(value);
 });
 
 count$.next(1); // logs: 1
 
-assert.deepStrictEqual(mut_history, [1]);
+assert.deepStrictEqual(stateHistory, [1]);
 
 count$.next(2); // logs: 2
 
-assert.deepStrictEqual(mut_history, [1, 2]);
+assert.deepStrictEqual(stateHistory, [1, 2]);
 
 count$.next(3); // logs: 3
 
-assert.deepStrictEqual(mut_history, [1, 2, 3]);
+assert.deepStrictEqual(stateHistory, [1, 2, 3]);
 ```

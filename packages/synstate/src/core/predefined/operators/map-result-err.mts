@@ -1,6 +1,6 @@
 import { Result } from 'ts-data-forge';
+import { map } from '../../operators/index.mjs';
 import { type KeepInitialValueOperator } from '../../types/index.mjs';
-import { map } from './map.mjs';
 
 export const mapResultErr = <R extends UnknownResult, E2>(
   mapFn: (x: Result.UnwrapErr<R>) => E2,

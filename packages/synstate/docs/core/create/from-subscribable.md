@@ -77,13 +77,13 @@ const customSubscribable = {
 
 const observable$ = fromSubscribable<number>(customSubscribable);
 
-const mut_history: number[] = [];
+const valueHistory: number[] = [];
 
 await new Promise<void>((resolve) => {
   observable$.subscribe(
     (result) => {
       if (Result.isOk(result)) {
-        mut_history.push(result.value);
+        valueHistory.push(result.value);
       }
     },
     () => {
@@ -92,5 +92,5 @@ await new Promise<void>((resolve) => {
   );
 });
 
-assert.deepStrictEqual(mut_history, [1, 2, 3]);
+assert.deepStrictEqual(valueHistory, [1, 2, 3]);
 ```

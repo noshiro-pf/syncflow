@@ -26,21 +26,15 @@ Re-exports [attachIndex](core/predefined/operators/attach-index.md#attachindex)
 
 ***
 
-### auditTime
+### audit
 
-Re-exports [auditTime](core/operators/audit-time.md#audittime)
-
-***
-
-### AuditTimeOperatorObservable
-
-Re-exports [AuditTimeOperatorObservable](core/types/observable-family.md#audittimeoperatorobservable)
+Re-exports [audit](core/operators/audit.md#audit)
 
 ***
 
-### binarySearch
+### AuditOperatorObservable
 
-Re-exports [binarySearch](core/utils/utils.md#binarysearch)
+Re-exports [AuditOperatorObservable](core/types/observable-family.md#auditoperatorobservable)
 
 ***
 
@@ -80,6 +74,18 @@ Re-exports [CombineObservableRefined](core/types/observable-family.md#combineobs
 
 ***
 
+### counter
+
+Re-exports [counter](core/create/counter.md#counter)
+
+***
+
+### CounterObservable
+
+Re-exports [CounterObservable](core/types/observable-family.md#counterobservable)
+
+***
+
 ### createBooleanState
 
 Re-exports [createBooleanState](utils/create-state.md#createbooleanstate)
@@ -110,15 +116,15 @@ Re-exports [createValueEmitter](utils/create-event-emitter.md#createvalueemitter
 
 ***
 
-### debounceTime
+### debounce
 
-Re-exports [debounceTime](core/operators/debounce-time.md#debouncetime)
+Re-exports [debounce](core/operators/debounce.md#debounce)
 
 ***
 
-### DebounceTimeOperatorObservable
+### DebounceOperatorObservable
 
-Re-exports [DebounceTimeOperatorObservable](core/types/observable-family.md#debouncetimeoperatorobservable)
+Re-exports [DebounceOperatorObservable](core/types/observable-family.md#debounceoperatorobservable)
 
 ***
 
@@ -152,18 +158,6 @@ Re-exports [flatMap](core/operators/merge-map.md#flatmap)
 
 ***
 
-### fromArray
-
-Re-exports [fromArray](core/create/from-array.md#fromarray)
-
-***
-
-### FromArrayObservable
-
-Re-exports [FromArrayObservable](core/types/observable-family.md#fromarrayobservable)
-
-***
-
 ### fromPromise
 
 Re-exports [fromPromise](core/create/from-promise.md#frompromise)
@@ -191,12 +185,6 @@ Re-exports [FromSubscribableObservable](core/types/observable-family.md#fromsubs
 ### getKey
 
 Re-exports [getKey](core/predefined/operators/pluck.md#getkey)
-
-***
-
-### halfInt
-
-Re-exports [halfInt](core/utils/utils.md#halfint)
 
 ***
 
@@ -236,18 +224,6 @@ Re-exports [InitializedSyncChildObservableClass](core/class/child-observable-cla
 
 ***
 
-### interval
-
-Re-exports [interval](core/create/interval.md#interval)
-
-***
-
-### IntervalObservable
-
-Re-exports [IntervalObservable](core/types/observable-family.md#intervalobservable)
-
-***
-
 ### isChildObservable
 
 Re-exports [isChildObservable](core/types/observable.md#ischildobservable)
@@ -263,24 +239,6 @@ Re-exports [isManagerObservable](core/types/observable.md#ismanagerobservable)
 ### isRootObservable
 
 Re-exports [isRootObservable](core/types/observable.md#isrootobservable)
-
-***
-
-### issueObservableId
-
-Re-exports [issueObservableId](core/utils/id-maker.md#issueobservableid)
-
-***
-
-### issueSubscriberId
-
-Re-exports [issueSubscriberId](core/utils/id-maker.md#issuesubscriberid)
-
-***
-
-### issueUpdaterSymbol
-
-Re-exports [issueUpdaterSymbol](core/utils/id-maker.md#issueupdatersymbol)
 
 ***
 
@@ -304,7 +262,13 @@ Re-exports [ManagerObservableKind](core/types/observable-kind.md#managerobservab
 
 ### map
 
-Re-exports [map](core/predefined/operators/map.md#map)
+Re-exports [map](core/operators/map.md#map)
+
+***
+
+### MapOperatorObservable
+
+Re-exports [MapOperatorObservable](core/types/observable-family.md#mapoperatorobservable)
 
 ***
 
@@ -329,24 +293,6 @@ Re-exports [mapResultOk](core/predefined/operators/map-result-ok.md#mapresultok)
 ### mapTo
 
 Re-exports [mapTo](core/predefined/operators/map-to.md#mapto)
-
-***
-
-### mapWithIndex
-
-Re-exports [mapWithIndex](core/operators/map-with-index.md#mapwithindex)
-
-***
-
-### MapWithIndexOperatorObservable
-
-Re-exports [MapWithIndexOperatorObservable](core/types/observable-family.md#mapwithindexoperatorobservable)
-
-***
-
-### maxDepth
-
-Re-exports [maxDepth](core/utils/max-depth.md#maxdepth)
 
 ***
 
@@ -419,18 +365,6 @@ Re-exports [ObservableKind](core/types/observable-kind.md#observablekind)
 ### ObservableValue
 
 Re-exports [ObservableValue](core/types/observable.md#observablevalue)
-
-***
-
-### of
-
-Re-exports [of](core/create/of.md#of)
-
-***
-
-### OfObservable
-
-Re-exports [OfObservable](core/types/observable-family.md#ofobservable)
 
 ***
 
@@ -536,12 +470,6 @@ Re-exports [SourceObservable](core/types/observable-family.md#sourceobservable)
 
 ***
 
-### subject
-
-Re-exports [subject](core/create/source.md#subject)
-
-***
-
 ### Subscribable
 
 Re-exports [Subscribable](core/types/types.md#subscribable)
@@ -620,15 +548,15 @@ Re-exports [TakeWhileOperatorObservable](core/types/observable-family.md#takewhi
 
 ***
 
-### throttleTime
+### throttle
 
-Re-exports [throttleTime](core/operators/throttle-time.md#throttletime)
+Re-exports [throttle](core/operators/throttle.md#throttle)
 
 ***
 
-### ThrottleTimeOperatorObservable
+### ThrottleOperatorObservable
 
-Re-exports [ThrottleTimeOperatorObservable](core/types/observable-family.md#throttletimeoperatorobservable)
+Re-exports [ThrottleOperatorObservable](core/types/observable-family.md#throttleoperatorobservable)
 
 ***
 
@@ -641,12 +569,6 @@ Re-exports [timer](core/create/timer.md#timer)
 ### TimerObservable
 
 Re-exports [TimerObservable](core/types/observable-family.md#timerobservable)
-
-***
-
-### toSubscriber
-
-Re-exports [toSubscriber](core/utils/observable-utils.md#tosubscriber)
 
 ***
 

@@ -63,13 +63,13 @@ const fetchData = async (): Promise<{ value: number }> => ({ value: 42 });
 
 const data$ = fromPromise(fetchData());
 
-const mut_history: { value: number }[] = [];
+const valueHistory: { value: number }[] = [];
 
 await new Promise<void>((resolve) => {
   data$.subscribe(
     (result) => {
       if (Result.isOk(result)) {
-        mut_history.push(result.value);
+        valueHistory.push(result.value);
       }
     },
     () => {
@@ -78,5 +78,5 @@ await new Promise<void>((resolve) => {
   );
 });
 
-assert.deepStrictEqual(mut_history, [{ value: 42 }]);
+assert.deepStrictEqual(valueHistory, [{ value: 42 }]);
 ```

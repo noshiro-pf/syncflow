@@ -77,10 +77,10 @@ const results$ = searchQuery$.pipe(
   }),
 );
 
-const mut_history: string[][] = [];
+const valueHistory: string[][] = [];
 
 results$.subscribe((value) => {
-  mut_history.push(value);
+  valueHistory.push(value);
 });
 
 searchQuery$.next('a');
@@ -93,7 +93,7 @@ await new Promise((resolve) => {
   setTimeout(resolve, 200);
 });
 
-assert.deepStrictEqual(mut_history, [['abc']]);
+assert.deepStrictEqual(valueHistory, [['abc']]);
 ```
 
 #### Note

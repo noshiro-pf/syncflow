@@ -50,12 +50,12 @@ An observable that emits after delay
 
 const delayed$ = timer(100);
 
-const mut_history: number[] = [];
+const valueHistory: number[] = [];
 
 await new Promise<void>((resolve) => {
   delayed$.subscribe(
     () => {
-      mut_history.push(1);
+      valueHistory.push(1);
     },
     () => {
       resolve();
@@ -63,5 +63,5 @@ await new Promise<void>((resolve) => {
   );
 });
 
-assert.deepStrictEqual(mut_history, [1]);
+assert.deepStrictEqual(valueHistory, [1]);
 ```

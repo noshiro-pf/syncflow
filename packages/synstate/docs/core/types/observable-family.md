@@ -8,11 +8,11 @@
 
 ## Type Aliases
 
-### AuditTimeOperatorObservable
+### AuditOperatorObservable
 
-> **AuditTimeOperatorObservable**\<`A`\> = [`AsyncChildObservable`](observable.md#asyncchildobservable)\<`A`, readonly \[`A`\]\>
+> **AuditOperatorObservable**\<`A`\> = [`AsyncChildObservable`](observable.md#asyncchildobservable)\<`A`, readonly \[`A`\]\>
 
-Defined in: [core/types/observable-family.mts:241](https://github.com/noshiro-pf/synstate/blob/main/packages/synstate/src/core/types/observable-family.mts#L241)
+Defined in: [core/types/observable-family.mts:228](https://github.com/noshiro-pf/synstate/blob/main/packages/synstate/src/core/types/observable-family.mts#L228)
 
 #### Type Parameters
 
@@ -26,7 +26,7 @@ Defined in: [core/types/observable-family.mts:241](https://github.com/noshiro-pf
 
 > **CombineObservable**\<`A`\> = `SynStateInternals.CombineObservableImpl`\<`A`\>
 
-Defined in: [core/types/observable-family.mts:166](https://github.com/noshiro-pf/synstate/blob/main/packages/synstate/src/core/types/observable-family.mts#L166)
+Defined in: [core/types/observable-family.mts:156](https://github.com/noshiro-pf/synstate/blob/main/packages/synstate/src/core/types/observable-family.mts#L156)
 
 #### Type Parameters
 
@@ -40,7 +40,7 @@ Defined in: [core/types/observable-family.mts:166](https://github.com/noshiro-pf
 
 > **CombineObservableRefined**\<`OS`\> = `SynStateInternals.CombineObservableRefinedImpl`\<`OS`\>
 
-Defined in: [core/types/observable-family.mts:169](https://github.com/noshiro-pf/synstate/blob/main/packages/synstate/src/core/types/observable-family.mts#L169)
+Defined in: [core/types/observable-family.mts:159](https://github.com/noshiro-pf/synstate/blob/main/packages/synstate/src/core/types/observable-family.mts#L159)
 
 #### Type Parameters
 
@@ -50,11 +50,19 @@ Defined in: [core/types/observable-family.mts:169](https://github.com/noshiro-pf
 
 ***
 
-### DebounceTimeOperatorObservable
+### CounterObservable
 
-> **DebounceTimeOperatorObservable**\<`A`\> = [`AsyncChildObservable`](observable.md#asyncchildobservable)\<`A`, readonly \[`A`\]\>
+> **CounterObservable** = `Readonly`\<\{ `start`: () => [`CounterObservable`](#counterobservable); \}\> & [`RootObservable`](observable.md#rootobservable)\<`SafeUint`\>
 
-Defined in: [core/types/observable-family.mts:246](https://github.com/noshiro-pf/synstate/blob/main/packages/synstate/src/core/types/observable-family.mts#L246)
+Defined in: [core/types/observable-family.mts:34](https://github.com/noshiro-pf/synstate/blob/main/packages/synstate/src/core/types/observable-family.mts#L34)
+
+***
+
+### DebounceOperatorObservable
+
+> **DebounceOperatorObservable**\<`A`\> = [`AsyncChildObservable`](observable.md#asyncchildobservable)\<`A`, readonly \[`A`\]\>
+
+Defined in: [core/types/observable-family.mts:230](https://github.com/noshiro-pf/synstate/blob/main/packages/synstate/src/core/types/observable-family.mts#L230)
 
 #### Type Parameters
 
@@ -68,21 +76,7 @@ Defined in: [core/types/observable-family.mts:246](https://github.com/noshiro-pf
 
 > **FilterOperatorObservable**\<`A`\> = [`SyncChildObservable`](observable.md#syncchildobservable)\<`A`, readonly \[`A`\]\>
 
-Defined in: [core/types/observable-family.mts:227](https://github.com/noshiro-pf/synstate/blob/main/packages/synstate/src/core/types/observable-family.mts#L227)
-
-#### Type Parameters
-
-##### A
-
-`A`
-
-***
-
-### FromArrayObservable
-
-> **FromArrayObservable**\<`A`\> = `Readonly`\<\{ `emit`: () => [`FromArrayObservable`](#fromarrayobservable)\<`A`\>; \}\> & [`RootObservable`](observable.md#rootobservable)\<`A`\>
-
-Defined in: [core/types/observable-family.mts:31](https://github.com/noshiro-pf/synstate/blob/main/packages/synstate/src/core/types/observable-family.mts#L31)
+Defined in: [core/types/observable-family.mts:214](https://github.com/noshiro-pf/synstate/blob/main/packages/synstate/src/core/types/observable-family.mts#L214)
 
 #### Type Parameters
 
@@ -96,7 +90,7 @@ Defined in: [core/types/observable-family.mts:31](https://github.com/noshiro-pf/
 
 > **FromPromiseObservable**\<`A`, `E`\> = [`RootObservable`](observable.md#rootobservable)\<`Result`\<`A`, `E`\>\>
 
-Defined in: [core/types/observable-family.mts:36](https://github.com/noshiro-pf/synstate/blob/main/packages/synstate/src/core/types/observable-family.mts#L36)
+Defined in: [core/types/observable-family.mts:26](https://github.com/noshiro-pf/synstate/blob/main/packages/synstate/src/core/types/observable-family.mts#L26)
 
 #### Type Parameters
 
@@ -114,7 +108,7 @@ Defined in: [core/types/observable-family.mts:36](https://github.com/noshiro-pf/
 
 > **FromSubscribableObservable**\<`A`, `E`\> = [`RootObservable`](observable.md#rootobservable)\<`Result`\<`A`, `E`\>\>
 
-Defined in: [core/types/observable-family.mts:40](https://github.com/noshiro-pf/synstate/blob/main/packages/synstate/src/core/types/observable-family.mts#L40)
+Defined in: [core/types/observable-family.mts:30](https://github.com/noshiro-pf/synstate/blob/main/packages/synstate/src/core/types/observable-family.mts#L30)
 
 #### Type Parameters
 
@@ -142,19 +136,11 @@ Defined in: [core/types/observable-family.mts:16](https://github.com/noshiro-pf/
 
 ***
 
-### IntervalObservable
+### MapOperatorObservable
 
-> **IntervalObservable** = `Readonly`\<\{ `start`: () => [`IntervalObservable`](#intervalobservable); \}\> & [`RootObservable`](observable.md#rootobservable)\<`SafeUint`\>
+> **MapOperatorObservable**\<`A`, `B`\> = [`SyncChildObservable`](observable.md#syncchildobservable)\<`B`, readonly \[`A`\]\>
 
-Defined in: [core/types/observable-family.mts:44](https://github.com/noshiro-pf/synstate/blob/main/packages/synstate/src/core/types/observable-family.mts#L44)
-
-***
-
-### MapWithIndexOperatorObservable
-
-> **MapWithIndexOperatorObservable**\<`A`, `B`\> = [`SyncChildObservable`](observable.md#syncchildobservable)\<`B`, readonly \[`A`\]\>
-
-Defined in: [core/types/observable-family.mts:187](https://github.com/noshiro-pf/synstate/blob/main/packages/synstate/src/core/types/observable-family.mts#L187)
+Defined in: [core/types/observable-family.mts:177](https://github.com/noshiro-pf/synstate/blob/main/packages/synstate/src/core/types/observable-family.mts#L177)
 
 #### Type Parameters
 
@@ -172,7 +158,7 @@ Defined in: [core/types/observable-family.mts:187](https://github.com/noshiro-pf
 
 > **MergeMapOperatorObservable**\<`A`, `B`\> = [`AsyncChildObservable`](observable.md#asyncchildobservable)\<`B`, readonly \[`A`\]\>
 
-Defined in: [core/types/observable-family.mts:256](https://github.com/noshiro-pf/synstate/blob/main/packages/synstate/src/core/types/observable-family.mts#L256)
+Defined in: [core/types/observable-family.mts:240](https://github.com/noshiro-pf/synstate/blob/main/packages/synstate/src/core/types/observable-family.mts#L240)
 
 #### Type Parameters
 
@@ -190,7 +176,7 @@ Defined in: [core/types/observable-family.mts:256](https://github.com/noshiro-pf
 
 > **MergeObservable**\<`A`\> = `SynStateInternals.MergeObservableImpl`\<`A`\>
 
-Defined in: [core/types/observable-family.mts:180](https://github.com/noshiro-pf/synstate/blob/main/packages/synstate/src/core/types/observable-family.mts#L180)
+Defined in: [core/types/observable-family.mts:170](https://github.com/noshiro-pf/synstate/blob/main/packages/synstate/src/core/types/observable-family.mts#L170)
 
 #### Type Parameters
 
@@ -204,7 +190,7 @@ Defined in: [core/types/observable-family.mts:180](https://github.com/noshiro-pf
 
 > **MergeObservableRefined**\<`OS`\> = `SynStateInternals.MergeObservableRefinedImpl`\<`OS`\>
 
-Defined in: [core/types/observable-family.mts:183](https://github.com/noshiro-pf/synstate/blob/main/packages/synstate/src/core/types/observable-family.mts#L183)
+Defined in: [core/types/observable-family.mts:173](https://github.com/noshiro-pf/synstate/blob/main/packages/synstate/src/core/types/observable-family.mts#L173)
 
 #### Type Parameters
 
@@ -214,25 +200,11 @@ Defined in: [core/types/observable-family.mts:183](https://github.com/noshiro-pf
 
 ***
 
-### OfObservable
-
-> **OfObservable**\<`A`\> = `Readonly`\<\{ `emit`: () => [`OfObservable`](#ofobservable)\<`A`\>; \}\> & [`RootObservable`](observable.md#rootobservable)\<`A`\>
-
-Defined in: [core/types/observable-family.mts:26](https://github.com/noshiro-pf/synstate/blob/main/packages/synstate/src/core/types/observable-family.mts#L26)
-
-#### Type Parameters
-
-##### A
-
-`A`
-
-***
-
 ### PairwiseOperatorObservable
 
 > **PairwiseOperatorObservable**\<`A`\> = [`SyncChildObservable`](observable.md#syncchildobservable)\<readonly \[`A`, `A`\], readonly \[`A`\]\>
 
-Defined in: [core/types/observable-family.mts:192](https://github.com/noshiro-pf/synstate/blob/main/packages/synstate/src/core/types/observable-family.mts#L192)
+Defined in: [core/types/observable-family.mts:179](https://github.com/noshiro-pf/synstate/blob/main/packages/synstate/src/core/types/observable-family.mts#L179)
 
 #### Type Parameters
 
@@ -246,7 +218,7 @@ Defined in: [core/types/observable-family.mts:192](https://github.com/noshiro-pf
 
 > **ScanOperatorObservable**\<`A`, `B`\> = [`InitializedSyncChildObservable`](observable.md#initializedsyncchildobservable)\<`B`, readonly \[`A`\]\>
 
-Defined in: [core/types/observable-family.mts:61](https://github.com/noshiro-pf/synstate/blob/main/packages/synstate/src/core/types/observable-family.mts#L61)
+Defined in: [core/types/observable-family.mts:51](https://github.com/noshiro-pf/synstate/blob/main/packages/synstate/src/core/types/observable-family.mts#L51)
 
 #### Type Parameters
 
@@ -264,7 +236,7 @@ Defined in: [core/types/observable-family.mts:61](https://github.com/noshiro-pf/
 
 > **SkipIfNoChangeOperatorObservable**\<`A`\> = [`SyncChildObservable`](observable.md#syncchildobservable)\<`A`, readonly \[`A`\]\>
 
-Defined in: [core/types/observable-family.mts:229](https://github.com/noshiro-pf/synstate/blob/main/packages/synstate/src/core/types/observable-family.mts#L229)
+Defined in: [core/types/observable-family.mts:216](https://github.com/noshiro-pf/synstate/blob/main/packages/synstate/src/core/types/observable-family.mts#L216)
 
 #### Type Parameters
 
@@ -278,7 +250,7 @@ Defined in: [core/types/observable-family.mts:229](https://github.com/noshiro-pf
 
 > **SkipUntilOperatorObservable**\<`A`\> = [`SyncChildObservable`](observable.md#syncchildobservable)\<`A`, readonly \[`A`\]\>
 
-Defined in: [core/types/observable-family.mts:212](https://github.com/noshiro-pf/synstate/blob/main/packages/synstate/src/core/types/observable-family.mts#L212)
+Defined in: [core/types/observable-family.mts:199](https://github.com/noshiro-pf/synstate/blob/main/packages/synstate/src/core/types/observable-family.mts#L199)
 
 #### Type Parameters
 
@@ -292,7 +264,7 @@ Defined in: [core/types/observable-family.mts:212](https://github.com/noshiro-pf
 
 > **SkipWhileOperatorObservable**\<`A`\> = [`SyncChildObservable`](observable.md#syncchildobservable)\<`A`, readonly \[`A`\]\>
 
-Defined in: [core/types/observable-family.mts:207](https://github.com/noshiro-pf/synstate/blob/main/packages/synstate/src/core/types/observable-family.mts#L207)
+Defined in: [core/types/observable-family.mts:194](https://github.com/noshiro-pf/synstate/blob/main/packages/synstate/src/core/types/observable-family.mts#L194)
 
 #### Type Parameters
 
@@ -320,7 +292,7 @@ Defined in: [core/types/observable-family.mts:21](https://github.com/noshiro-pf/
 
 > **SwitchMapOperatorObservable**\<`A`, `B`\> = [`AsyncChildObservable`](observable.md#asyncchildobservable)\<`B`, readonly \[`A`\]\>
 
-Defined in: [core/types/observable-family.mts:251](https://github.com/noshiro-pf/synstate/blob/main/packages/synstate/src/core/types/observable-family.mts#L251)
+Defined in: [core/types/observable-family.mts:235](https://github.com/noshiro-pf/synstate/blob/main/packages/synstate/src/core/types/observable-family.mts#L235)
 
 #### Type Parameters
 
@@ -338,7 +310,7 @@ Defined in: [core/types/observable-family.mts:251](https://github.com/noshiro-pf
 
 > **TakeUntilOperatorObservable**\<`A`\> = [`SyncChildObservable`](observable.md#syncchildobservable)\<`A`, readonly \[`A`\]\>
 
-Defined in: [core/types/observable-family.mts:202](https://github.com/noshiro-pf/synstate/blob/main/packages/synstate/src/core/types/observable-family.mts#L202)
+Defined in: [core/types/observable-family.mts:189](https://github.com/noshiro-pf/synstate/blob/main/packages/synstate/src/core/types/observable-family.mts#L189)
 
 #### Type Parameters
 
@@ -352,7 +324,7 @@ Defined in: [core/types/observable-family.mts:202](https://github.com/noshiro-pf
 
 > **TakeWhileOperatorObservable**\<`A`\> = [`SyncChildObservable`](observable.md#syncchildobservable)\<`A`, readonly \[`A`\]\>
 
-Defined in: [core/types/observable-family.mts:197](https://github.com/noshiro-pf/synstate/blob/main/packages/synstate/src/core/types/observable-family.mts#L197)
+Defined in: [core/types/observable-family.mts:184](https://github.com/noshiro-pf/synstate/blob/main/packages/synstate/src/core/types/observable-family.mts#L184)
 
 #### Type Parameters
 
@@ -362,11 +334,11 @@ Defined in: [core/types/observable-family.mts:197](https://github.com/noshiro-pf
 
 ***
 
-### ThrottleTimeOperatorObservable
+### ThrottleOperatorObservable
 
-> **ThrottleTimeOperatorObservable**\<`A`\> = [`SyncChildObservable`](observable.md#syncchildobservable)\<`A`, readonly \[`A`\]\>
+> **ThrottleOperatorObservable**\<`A`\> = [`SyncChildObservable`](observable.md#syncchildobservable)\<`A`, readonly \[`A`\]\>
 
-Defined in: [core/types/observable-family.mts:234](https://github.com/noshiro-pf/synstate/blob/main/packages/synstate/src/core/types/observable-family.mts#L234)
+Defined in: [core/types/observable-family.mts:221](https://github.com/noshiro-pf/synstate/blob/main/packages/synstate/src/core/types/observable-family.mts#L221)
 
 #### Type Parameters
 
@@ -380,7 +352,7 @@ Defined in: [core/types/observable-family.mts:234](https://github.com/noshiro-pf
 
 > **TimerObservable** = `Readonly`\<\{ `start`: () => [`TimerObservable`](#timerobservable); \}\> & [`RootObservable`](observable.md#rootobservable)\<`0`\>
 
-Defined in: [core/types/observable-family.mts:49](https://github.com/noshiro-pf/synstate/blob/main/packages/synstate/src/core/types/observable-family.mts#L49)
+Defined in: [core/types/observable-family.mts:39](https://github.com/noshiro-pf/synstate/blob/main/packages/synstate/src/core/types/observable-family.mts#L39)
 
 ***
 
@@ -388,7 +360,7 @@ Defined in: [core/types/observable-family.mts:49](https://github.com/noshiro-pf/
 
 > **WithBufferedFromOperatorObservable**\<`A`, `B`\> = [`SyncChildObservable`](observable.md#syncchildobservable)\<readonly \[`A`, readonly `B`[]\], readonly \[`A`\]\>
 
-Defined in: [core/types/observable-family.mts:222](https://github.com/noshiro-pf/synstate/blob/main/packages/synstate/src/core/types/observable-family.mts#L222)
+Defined in: [core/types/observable-family.mts:209](https://github.com/noshiro-pf/synstate/blob/main/packages/synstate/src/core/types/observable-family.mts#L209)
 
 #### Type Parameters
 
@@ -406,7 +378,7 @@ Defined in: [core/types/observable-family.mts:222](https://github.com/noshiro-pf
 
 > **WithCurrentValueFromOperatorObservable**\<`A`, `B`\> = [`SyncChildObservable`](observable.md#syncchildobservable)\<readonly \[`A`, `B`\], readonly \[`A`\]\>
 
-Defined in: [core/types/observable-family.mts:217](https://github.com/noshiro-pf/synstate/blob/main/packages/synstate/src/core/types/observable-family.mts#L217)
+Defined in: [core/types/observable-family.mts:204](https://github.com/noshiro-pf/synstate/blob/main/packages/synstate/src/core/types/observable-family.mts#L204)
 
 #### Type Parameters
 
@@ -424,7 +396,7 @@ Defined in: [core/types/observable-family.mts:217](https://github.com/noshiro-pf
 
 > **WithInitialValueOperatorObservable**\<`A`, `I`\> = [`InitializedSyncChildObservable`](observable.md#initializedsyncchildobservable)\<`A` \| `I`, readonly \[`A`\]\>
 
-Defined in: [core/types/observable-family.mts:56](https://github.com/noshiro-pf/synstate/blob/main/packages/synstate/src/core/types/observable-family.mts#L56)
+Defined in: [core/types/observable-family.mts:46](https://github.com/noshiro-pf/synstate/blob/main/packages/synstate/src/core/types/observable-family.mts#L46)
 
 #### Type Parameters
 
@@ -442,7 +414,7 @@ Defined in: [core/types/observable-family.mts:56](https://github.com/noshiro-pf/
 
 > **ZipObservable**\<`A`\> = `SynStateInternals.ZipObservableImpl`\<`A`\>
 
-Defined in: [core/types/observable-family.mts:173](https://github.com/noshiro-pf/synstate/blob/main/packages/synstate/src/core/types/observable-family.mts#L173)
+Defined in: [core/types/observable-family.mts:163](https://github.com/noshiro-pf/synstate/blob/main/packages/synstate/src/core/types/observable-family.mts#L163)
 
 #### Type Parameters
 
@@ -456,7 +428,7 @@ Defined in: [core/types/observable-family.mts:173](https://github.com/noshiro-pf
 
 > **ZipObservableRefined**\<`OS`\> = `SynStateInternals.ZipObservableRefinedImpl`\<`OS`\>
 
-Defined in: [core/types/observable-family.mts:176](https://github.com/noshiro-pf/synstate/blob/main/packages/synstate/src/core/types/observable-family.mts#L176)
+Defined in: [core/types/observable-family.mts:166](https://github.com/noshiro-pf/synstate/blob/main/packages/synstate/src/core/types/observable-family.mts#L166)
 
 #### Type Parameters
 

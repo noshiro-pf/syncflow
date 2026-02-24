@@ -8,9 +8,9 @@
 
 ## References
 
-### fromArray
+### counter
 
-Re-exports [fromArray](create/from-array.md#fromarray)
+Re-exports [counter](create/counter.md#counter)
 
 ***
 
@@ -26,27 +26,9 @@ Re-exports [fromSubscribable](create/from-subscribable.md#fromsubscribable)
 
 ***
 
-### interval
-
-Re-exports [interval](create/interval.md#interval)
-
-***
-
-### of
-
-Re-exports [of](create/of.md#of)
-
-***
-
 ### source
 
 Re-exports [source](create/source.md#source)
-
-***
-
-### subject
-
-Re-exports [subject](create/source.md#subject)
 
 ***
 

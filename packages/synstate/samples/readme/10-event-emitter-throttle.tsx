@@ -1,4 +1,4 @@
-import { createEventEmitter, throttleTime } from 'synstate';
+import { createEventEmitter, throttle } from 'synstate';
 
 // Create event emitter
 const [refreshClicked, onRefreshClick] = createEventEmitter();
@@ -9,7 +9,7 @@ refreshClicked.subscribe(() => {
 });
 
 // Throttle refresh clicks to prevent rapid successive executions
-const throttledRefresh = refreshClicked.pipe(throttleTime(2000));
+const throttledRefresh = refreshClicked.pipe(throttle(2000));
 
 throttledRefresh.subscribe(() => {
   console.log('Executing refresh...');

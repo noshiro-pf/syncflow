@@ -40,7 +40,7 @@
 gh repo clone noshiro-pf/synstate
 git submodule update --init --recursive
 pnpm i
-pnpm run --filter synstate build # Build packages/synstate
+pnpm run ws:build # Build all packages
 ```
 
 ## License

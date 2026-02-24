@@ -68,10 +68,10 @@ const trigger$ = source<number>();
 
 const result$ = trigger$.pipe(withBufferedFrom(data$));
 
-const mut_history: (readonly [number, readonly string[]])[] = [];
+const valueHistory: (readonly [number, readonly string[]])[] = [];
 
 result$.subscribe(([triggerValue, bufferedData]) => {
-  mut_history.push([triggerValue, bufferedData]);
+  valueHistory.push([triggerValue, bufferedData]);
 });
 
 data$.next('a');
@@ -80,13 +80,13 @@ data$.next('b');
 
 trigger$.next(1);
 
-assert.deepStrictEqual(mut_history, [[1, ['a', 'b']]]);
+assert.deepStrictEqual(valueHistory, [[1, ['a', 'b']]]);
 
 data$.next('c');
 
 trigger$.next(2);
 
-assert.deepStrictEqual(mut_history, [
+assert.deepStrictEqual(valueHistory, [
   [1, ['a', 'b']],
   [2, ['c']],
 ]);
@@ -156,10 +156,10 @@ const trigger$ = source<number>();
 
 const result$ = trigger$.pipe(withBufferedFrom(data$));
 
-const mut_history: (readonly [number, readonly string[]])[] = [];
+const valueHistory: (readonly [number, readonly string[]])[] = [];
 
 result$.subscribe(([triggerValue, bufferedData]) => {
-  mut_history.push([triggerValue, bufferedData]);
+  valueHistory.push([triggerValue, bufferedData]);
 });
 
 data$.next('a');
@@ -168,13 +168,13 @@ data$.next('b');
 
 trigger$.next(1);
 
-assert.deepStrictEqual(mut_history, [[1, ['a', 'b']]]);
+assert.deepStrictEqual(valueHistory, [[1, ['a', 'b']]]);
 
 data$.next('c');
 
 trigger$.next(2);
 
-assert.deepStrictEqual(mut_history, [
+assert.deepStrictEqual(valueHistory, [
   [1, ['a', 'b']],
   [2, ['c']],
 ]);

@@ -21,13 +21,13 @@ if (import.meta.vitest !== undefined) {
 
     const data$ = fromPromise(fetchData());
 
-    const mut_history: { value: number }[] = [];
+    const valueHistory: { value: number }[] = [];
 
     await new Promise<void>((resolve) => {
       data$.subscribe(
         (result) => {
           if (Result.isOk(result)) {
-            mut_history.push(result.value);
+            valueHistory.push(result.value);
           }
         },
         () => {
@@ -36,7 +36,7 @@ if (import.meta.vitest !== undefined) {
       );
     });
 
-    assert.deepStrictEqual(mut_history, [{ value: 42 }]);
+    assert.deepStrictEqual(valueHistory, [{ value: 42 }]);
 
     // embed-sample-code-ignore-below
   });

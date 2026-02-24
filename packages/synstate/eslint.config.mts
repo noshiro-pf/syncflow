@@ -85,6 +85,8 @@ export default [
       'react/jsx-no-bind': 'off',
       'react-perf/jsx-no-new-function-as-prop': 'off',
       'react/no-array-index-key': 'off',
+      'functional/immutable-data': 'off',
+      'functional/no-let': 'off',
     }),
   },
 ] satisfies readonly FlatConfig[];

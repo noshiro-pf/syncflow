@@ -38,7 +38,7 @@ Defined in: [core/class/root-observable-class.mts:18](https://github.com/noshiro
 
 ###### \_\_namedParameters
 
-`Readonly`\<\{ `initialValue`: `ReturnType`\<[`RootObservable`](../types/observable.md#rootobservable)\<`A`\>\[`"getSnapshot"`\]\>; \}\>
+`Readonly`\<\{ `initialValue`: `Optional`\<`A`\>; \}\>
 
 ###### Returns
 

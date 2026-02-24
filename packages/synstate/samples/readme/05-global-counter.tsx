@@ -28,7 +28,7 @@ const Counter = (): React.JSX.Element => {
   );
 };
 
-// Component 2 (synced automatically)
+// Component 2
 const ResetButton = (): React.JSX.Element => (
   <button
     onClick={() => {

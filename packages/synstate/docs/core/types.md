@@ -14,9 +14,9 @@ Re-exports [AsyncChildObservable](types/observable.md#asyncchildobservable)
 
 ***
 
-### AuditTimeOperatorObservable
+### AuditOperatorObservable
 
-Re-exports [AuditTimeOperatorObservable](types/observable-family.md#audittimeoperatorobservable)
+Re-exports [AuditOperatorObservable](types/observable-family.md#auditoperatorobservable)
 
 ***
 
@@ -44,9 +44,15 @@ Re-exports [CombineObservableRefined](types/observable-family.md#combineobservab
 
 ***
 
-### DebounceTimeOperatorObservable
+### CounterObservable
 
-Re-exports [DebounceTimeOperatorObservable](types/observable-family.md#debouncetimeoperatorobservable)
+Re-exports [CounterObservable](types/observable-family.md#counterobservable)
+
+***
+
+### DebounceOperatorObservable
+
+Re-exports [DebounceOperatorObservable](types/observable-family.md#debounceoperatorobservable)
 
 ***
 
@@ -59,12 +65,6 @@ Re-exports [DropInitialValueOperator](types/observable.md#dropinitialvalueoperat
 ### FilterOperatorObservable
 
 Re-exports [FilterOperatorObservable](types/observable-family.md#filteroperatorobservable)
-
-***
-
-### FromArrayObservable
-
-Re-exports [FromArrayObservable](types/observable-family.md#fromarrayobservable)
 
 ***
 
@@ -110,12 +110,6 @@ Re-exports [InitializedSyncChildObservable](types/observable.md#initializedsyncc
 
 ***
 
-### IntervalObservable
-
-Re-exports [IntervalObservable](types/observable-family.md#intervalobservable)
-
-***
-
 ### isChildObservable
 
 Re-exports [isChildObservable](types/observable.md#ischildobservable)
@@ -152,9 +146,9 @@ Re-exports [ManagerObservableKind](types/observable-kind.md#managerobservablekin
 
 ***
 
-### MapWithIndexOperatorObservable
+### MapOperatorObservable
 
-Re-exports [MapWithIndexOperatorObservable](types/observable-family.md#mapwithindexoperatorobservable)
+Re-exports [MapOperatorObservable](types/observable-family.md#mapoperatorobservable)
 
 ***
 
@@ -209,12 +203,6 @@ Re-exports [ObservableKind](types/observable-kind.md#observablekind)
 ### ObservableValue
 
 Re-exports [ObservableValue](types/observable.md#observablevalue)
-
-***
-
-### OfObservable
-
-Re-exports [OfObservable](types/observable-family.md#ofobservable)
 
 ***
 
@@ -314,9 +302,9 @@ Re-exports [TakeWhileOperatorObservable](types/observable-family.md#takewhileope
 
 ***
 
-### ThrottleTimeOperatorObservable
+### ThrottleOperatorObservable
 
-Re-exports [ThrottleTimeOperatorObservable](types/observable-family.md#throttletimeoperatorobservable)
+Re-exports [ThrottleOperatorObservable](types/observable-family.md#throttleoperatorobservable)
 
 ***
 
