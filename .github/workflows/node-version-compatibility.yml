@@ -47,3 +47,6 @@ jobs:
 
       - name: Verify installation
         run: pnpm list
+
+      - name: Run tests
+        run: pnpm run ws:build

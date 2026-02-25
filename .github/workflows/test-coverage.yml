@@ -1,4 +1,4 @@
-name: Type Check
+name: Test Coverage
 
 on:
   push:
@@ -12,20 +12,9 @@ on:
   workflow_dispatch:
 
 jobs:
-  type-check:
+  test-coverage:
     runs-on: ubuntu-latest
     timeout-minutes: 15
-
-    strategy:
-      fail-fast: true
-      matrix:
-        command:
-          - check:root
-          - ws:type-check
-          - ws:lint:fix
-          - ws:test:all
-          - ws:test:browser
-          - codemod:full
 
     steps:
       - name: Checkout
@@ -55,27 +44,20 @@ jobs:
         id: check_diff_type
         run: pnpm exec check-should-run-type-checks
 
-      - name: Install Playwright Browsers
-        if: steps.check_diff_type.outputs.should_run == 'true' && matrix.command == 'ws:test:browser'
-        run: pnpm exec playwright install chromium
-
       - name: Build all packages
         run: pnpm run ws:build
 
-      - name: Run "${{ matrix.command }}"
-        if: steps.check_diff_type.outputs.should_run == 'true' && matrix.command != 'ws:test:browser'
-        run: pnpm run ${{ matrix.command }}
-
-      # Source - https://stackoverflow.com/a/71583518
-      # Posted by VonC, modified by community. See post 'Timeline' for change history
-      # Retrieved 2026-02-10, License - CC BY-SA 4.0
-      - name: Run 'ws:test:browser' with retry
-        if: steps.check_diff_type.outputs.should_run == 'true' && matrix.command == 'ws:test:browser'
-        uses: nick-fields/retry@ce71cc2ab81d554ebbe88c79ab5975992d79ba08 # v3.0.2
-        with:
-          timeout_minutes: 10
-          max_attempts: 3
-          command: pnpm run ${{ matrix.command }}
+      - name: Run "ws:test:cov" for coverage report
+        if: steps.check_diff_type.outputs.should_run == 'true'
+        run: pnpm run ws:test:cov
 
       - name: Check if there is no file diff
         run: pnpm exec assert-repo-is-clean
+
+      - name: Upload coverage reports to Codecov
+        if: steps.check_diff_type.outputs.should_run == 'true'
+        uses: codecov/codecov-action@671740ac38dd9b0130fbe1cec585b89eea48d3de # v5.5.2
+        with:
+          token: ${{ secrets.CODECOV_TOKEN }}
+          files: ./app/coverage/coverage-final.json
+          flags: app
