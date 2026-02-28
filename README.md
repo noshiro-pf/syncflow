@@ -24,7 +24,7 @@
 - 🚀 **Lightweight**: Minimal bundle size with only one external runtime dependency ([ts-data-forge](https://www.npmjs.com/package/ts-data-forge))
 - ⚡ **High Performance**: Optimized for fast state updates and minimal re-renders
 - 🌐 **Framework Agnostic**: Works with React, Vue, Svelte, or vanilla JavaScript
-- 🔧 **Observable-based**: Built on Observable pattern similar to RxJS, but with a completely independent implementation from scratch — not a wrapper. Offers optional advanced features like operators (`map`, `filter`, `scan`, `debounceTime`) and combinators (`merge`, `combine`)
+- 🔧 **Observable-based**: Built on Observable pattern similar to RxJS, but with a completely independent implementation from scratch — not a wrapper. Offers optional advanced features like operators (`map`, `filter`, `scan`, `debounce`) and combinators (`merge`, `combine`)
 
 ## Packages
 

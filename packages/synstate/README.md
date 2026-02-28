@@ -56,41 +56,109 @@ pnpm add synstate
 
 ```tsx
 // Create a reactive state
-const [state, setState, { updateState, resetState, getSnapshot }] =
-    createState(0);
+const [state, setState] = createState(0);
+// type of state: InitializedObservable<number>
+// type of setState: (v: number) => number
 
 const stateHistory: number[] = [];
 
-// Subscribe to changes (in React components, Vue watchers, etc.)
+// Subscribe to changes
 state.subscribe((count) => {
     stateHistory.push(count);
 });
 
 assert.deepStrictEqual(stateHistory, [0]);
 
-assert.strictEqual(getSnapshot(), 0);
-
 // Update state
 setState(1);
 
-assert.strictEqual(getSnapshot(), 1);
-
 assert.deepStrictEqual(stateHistory, [0, 1]);
-
-updateState((prev) => prev + 2);
-
-assert.strictEqual(getSnapshot(), 3);
-
-assert.deepStrictEqual(stateHistory, [0, 1, 3]);
-
-resetState();
-
-assert.strictEqual(getSnapshot(), 0);
-
-assert.deepStrictEqual(stateHistory, [0, 1, 3, 0]);
 ```
 
 ### With React
+
+```bash
+npm add synstate-react-hooks
+```
+
+```tsx
+import type * as React from 'react';
+import { createState } from 'synstate-react-hooks';
+
+const [useUserState, setUserState] = createState({
+    name: '',
+    email: '',
+});
+
+const UserProfile = (): React.JSX.Element => {
+    const user = useUserState();
+
+    return (
+        <div>
+            <p>
+                {'Name: '}
+                {user.name}
+            </p>
+            <button
+                onClick={() => {
+                    setUserState({
+                        name: 'Alice',
+                        email: 'alice@example.com',
+                    });
+                }}
+            >
+                {'Set User'}
+            </button>
+        </div>
+    );
+};
+```
+
+This is equivalent to the following code without synstate-react-hook:
+
+```tsx
+import * as React from 'react';
+import { createState } from 'synstate';
+
+const [userState, setUserState] = createState({
+    name: '',
+    email: '',
+});
+
+const UserProfile = (): React.JSX.Element => {
+    const user = React.useSyncExternalStore(
+        (onStoreChange: () => void) => {
+            const { unsubscribe } = userState.subscribe(onStoreChange);
+
+            return unsubscribe;
+        },
+        () => userState.getSnapshot().value,
+    );
+
+    return (
+        <div>
+            <p>
+                {'Name: '}
+                {user.name}
+            </p>
+            <button
+                onClick={() => {
+                    setUserState({
+                        name: 'Alice',
+                        email: 'alice@example.com',
+                    });
+                }}
+            >
+                {'Set User'}
+            </button>
+        </div>
+    );
+};
+```
+
+See also the [synstate-react-hooks README](../synstate-react-hooks/README.md).
+
+If you're using React v17 or earlier:
 
 ```tsx
 import * as React from 'react';
@@ -134,89 +202,6 @@ const UserProfile = (): React.JSX.Element => {
 };
 ```
 
-If you're using React v18 or later:
-
-```tsx
-import * as React from 'react';
-import { createState } from 'synstate';
-
-const [userState, setUserState] = createState({
-    name: '',
-    email: '',
-});
-
-const UserProfile = (): React.JSX.Element => {
-    const user = React.useSyncExternalStore(
-        (onStoreChange: () => void) => {
-            const { unsubscribe } = userState.subscribe(onStoreChange);
-
-            return unsubscribe;
-        },
-        () => userState.getSnapshot().value,
-    );
-
-    return (
-        <div>
-            <p>
-                {'Name: '}
-                {user.name}
-            </p>
-            <button
-                onClick={() => {
-                    setUserState({
-                        name: 'Alice',
-                        email: 'alice@example.com',
-                    });
-                }}
-            >
-                {'Set User'}
-            </button>
-        </div>
-    );
-};
-```
-
-You can write the equivalent code more concisely using synstate-react-hooks:
-
-```bash
-npm add synstate-react-hooks
-```
-
-```tsx
-import type * as React from 'react';
-import { createState } from 'synstate-react-hooks';
-
-const [useUserState, setUserState] = createState({
-    name: '',
-    email: '',
-});
-
-const UserProfile = (): React.JSX.Element => {
-    const user = useUserState();
-
-    return (
-        <div>
-            <p>
-                {'Name: '}
-                {user.name}
-            </p>
-            <button
-                onClick={() => {
-                    setUserState({
-                        name: 'Alice',
-                        email: 'alice@example.com',
-                    });
-                }}
-            >
-                {'Set User'}
-            </button>
-        </div>
-    );
-};
-```
-
-See also the [synstate-react-hooks README](../synstate-react-hooks/README.md).
-
 ## Why SynState?
 
 ### Simple State Management, Not Complex Reactive Programming
@@ -250,6 +235,49 @@ At the same time, it supports complex asynchronous processing such as `debounce`
 - ❌ Your app is simple enough for React Context alone
 
 ## Examples
+
+### Simple State with Additional APIs
+
+```tsx
+// Create a reactive state
+const [state, setState, { updateState, resetState, getSnapshot }] =
+    createState(0);
+// type of state: InitializedObservable<number>
+// type of setState: (v: number) => number
+// type of updateState: (updater: (prev: number) => number) => number
+// type of resetState: () => void
+// type of getSnapshot: () => number
+
+const stateHistory: number[] = [];
+
+// Subscribe to changes
+state.subscribe((count) => {
+    stateHistory.push(count);
+});
+
+assert.deepStrictEqual(stateHistory, [0]);
+
+assert.strictEqual(getSnapshot(), 0);
+
+// Update state
+setState(1);
+
+assert.strictEqual(getSnapshot(), 1);
+
+assert.deepStrictEqual(stateHistory, [0, 1]);
+
+updateState((prev) => prev + 2);
+
+assert.strictEqual(getSnapshot(), 3);
+
+assert.deepStrictEqual(stateHistory, [0, 1, 3]);
+
+resetState();
+
+assert.strictEqual(getSnapshot(), 0);
+
+assert.deepStrictEqual(stateHistory, [0, 1, 3, 0]);
+```
 
 ### Global Counter State (React)
 

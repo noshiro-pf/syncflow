@@ -67,7 +67,7 @@ namespace SynStateInternals {
     ? true
     : false;
 
-  /** Evaluates True | false as true instead of boolean */
+  /** Evaluates true | false as true instead of boolean */
   type LogicalValue<B extends boolean> = readonly [B] extends readonly [true]
     ? true
     : readonly [B] extends readonly [false]
