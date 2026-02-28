@@ -17,7 +17,7 @@
 
 "SynState" is named after "Synchronized + State." It represents a sound synchronized state through a **glitch-free**[^1] Observable implementation.
 
-[^1]: See ["How SynState solved the glitch?"](../../docs/how-synstate-solved-the-glitch.md)
+[^1]: See ["How SynState solved the glitch?"](./documents/how-synstate-solved-the-glitch.md).
 
 ## Features
 
@@ -216,7 +216,7 @@ A state management library that scales from simple global state to complex async
 
 RxJS is the most well-known Observable library, and it excels at modeling asynchronous event processing. However, RxJS has a fundamental issue known as **glitch**[^1] — a phenomenon where derived values can temporarily enter inconsistent intermediate states during synchronous propagation. For a state management library, where consistency of derived state is critical, this is unacceptable. SynState was built from scratch with a glitch-free Observable implementation to solve this problem.
 
-For a detailed explanation, see ["How SynState solved the glitch?"](../../docs/how-synstate-solved-the-glitch.md).
+For a detailed explanation, see ["How SynState solved the glitch?"](./documents/how-synstate-solved-the-glitch.md).
 
 ### Key Differences from RxJS
 

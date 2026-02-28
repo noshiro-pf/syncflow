@@ -31,6 +31,17 @@ const documents: DeepReadonly<
       '11-event-emitter-throttle.tsx',
     ],
   },
+  {
+    mdPath: path.resolve(
+      workspaceRootPath,
+      'documents/how-synstate-solved-the-glitch.md',
+    ),
+    samplesDir: path.resolve(
+      workspaceRootPath,
+      'samples/how-synstate-solved-the-glitch',
+    ),
+    sampleCodeFiles: ['01-simple-glitch-example.mts'],
+  },
 ] as const;
 
 /** Embeds sample code from ./samples/readme directory into README.md */
