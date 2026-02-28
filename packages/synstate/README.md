@@ -204,14 +204,15 @@ const UserProfile = (): React.JSX.Element => {
 
 ## Why SynState?
 
-### Simple State Management, Not Complex Reactive Programming
+### Simple to Start, Powerful When You Need It
 
-SynState is a state management library for web frontends, similar to Redux, Jotai, Zustand, and MobX. It provides APIs for creating and managing global state across your application.
+SynState is a state management library for web frontends, similar to Redux, Jotai, Zustand, and MobX. For most use cases, `createState`, `createReducer`, and simple combinators like `combine` and `map` are all you need — clean, minimal APIs that feel as intuitive as React's `useState` / `useReducer`, but for global state.
 
-Under the hood, SynState is built on Observable patterns similar to those provided by RxJS. However, unlike RxJS, which can make code harder to read with many operators and complex streams, SynState focuses on **simple, readable state management and event handling**. Most applications only need `createState`, `createReducer`, and simple operators/combinators like `combine` and `map` — clean, straightforward APIs that developers understand immediately.
+When your requirements grow more complex, SynState scales with you. Built on its own Observable implementation, it provides operators like `debounce`, `throttle`, `switchMap`, and `mergeMap` for sophisticated asynchronous state management — without requiring an additional library like RxJS. You can describe everything from a simple counter to a debounced search pipeline with auto-cancellation in a single, unified API.
 
-At the same time, it supports complex asynchronous processing such as `debounce` for controlling the timing of events that arrive in succession by waiting until they stop arriving, and `switchMap` for combining multiple asynchronous processing steps, allowing you to describe state management logic of varying complexity in a unified manner.
-**Advanced reactive features are optional** and only used when you actually need them (like debouncing search input). The library doesn't force you into a reactive programming mindset.
+### TBD
+
+["How SynState solved the glitch?"](../../docs/how-synstate-solved-the-glitch.md)
 
 ### Key Differences from RxJS
 
@@ -495,8 +496,6 @@ const ItemList = (): React.JSX.Element => {
 };
 ```
 
-// Events
-
 ### Advanced: Search with Debounce
 
 ```tsx
@@ -625,7 +624,6 @@ For complex scenarios, SynState provides observable-based APIs:
 
 - `map` variants
     - `map(fn)`: Transform values
-    - `mapWithIndex(fn)`: Transform values with index
     - `mapTo(value)`: Map all values to a constant
     - `getKey(key)`: Extract property value from objects (alias: `pluck`)
     - `attachIndex()`: Attach index to each value (alias: `withIndex`)
@@ -651,11 +649,12 @@ For complex scenarios, SynState provides observable-based APIs:
     - `audit(ms)`: Emit the last value after specified time window (Almost equivalent to RxJS `auditTime`)
     - `debounce(ms)`: Debounce emissions (Almost equivalent to RxJS `debounceTime`)
     - `throttle(ms)`: Throttle emissions (Almost equivalent to RxJS `throttleTime`)
-- `pairwise()`: Emit previous and current values as pairs
-- `scan(reducer, seed)`: Accumulate values
-- `withBuffered(observable)`: Buffer values from observable and emit with parent (alias: `withBufferedFrom`)
-- `withCurrentValueFrom(observable)`: Sample current value from another observable (alias: `withLatestFrom`)
-- `withInitialValue(value)`: Provide an initial value for uninitialized observable
+- Others
+    - `pairwise()`: Emit previous and current values as pairs
+    - `scan(reducer, seed)`: Accumulate values
+    - `withBuffered(observable)`: Buffer values from observable and emit with parent (alias: `withBufferedFrom`)
+    - `withCurrentValueFrom(observable)`: Sample current value from another observable (alias: `withLatestFrom`)
+    - `withInitialValue(value)`: Provide an initial value for uninitialized observable
 
 #### Combination
 
