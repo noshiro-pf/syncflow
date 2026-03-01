@@ -89,7 +89,7 @@ class CounterObservableClass
     this.#mut_isStarted = true;
 
     if (this.isCompleted) {
-      console.warn('cannot restart stopped CounterObservableClass');
+      console.warn('cannot restart stopped CounterObservable');
 
       return this;
     }

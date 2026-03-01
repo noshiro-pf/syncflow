@@ -1,7 +1,7 @@
 import { collectToArray, combine, counter, map, take } from 'synstate';
 
 if (import.meta.vitest !== undefined) {
-  test('simple-state', async () => {
+  test('simple-glitch-example', async () => {
     // embed-sample-code-ignore-above
 
     const counterObservable = counter(1000 /* ms */);
