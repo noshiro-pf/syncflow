@@ -17,7 +17,7 @@
 
 ## Features
 
-- 🎯 **Simple State Management**: Easy-to-use `createState` and `createReducer` similar to React useState/useReducer for global state
+- 🎯 **Simple State Management**: Easy-to-use `createState` and `createReducer` similar to React `useState`/`useReducer` for global state
 - ⚡ **High Performance**: Optimized for fast state updates and minimal re-renders
 - 🎨 **Type-Safe**: Full TypeScript support with precise type inference
 - 🚀 **Lightweight**: Minimal bundle size with only one external runtime dependency ([ts-data-forge](https://www.npmjs.com/package/ts-data-forge))

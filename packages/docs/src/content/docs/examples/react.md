@@ -1,7 +1,7 @@
 ---
 title: React Examples
 sidebar:
-    order: 2
+    order: 1
 ---
 
 ## Global Counter

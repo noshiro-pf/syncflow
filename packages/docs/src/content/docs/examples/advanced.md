@@ -1,7 +1,7 @@
 ---
 title: Advanced Examples
 sidebar:
-    order: 1
+    order: 2
 ---
 
 ## Search with Debounce

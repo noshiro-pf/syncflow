@@ -6,7 +6,7 @@
   "scripts": {
     "build": "pnpm run doc:embed && astro build",
     "dev": "astro dev",
-    "doc": "run-s doc:embed",
+    "doc": "run-s doc:embed fmt",
     "doc:embed": "tsx ./scripts/embed-examples.mts",
     "fmt": "format-uncommitted",
     "fmt:full": "pnpm run z:prettier .",

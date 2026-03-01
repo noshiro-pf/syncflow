@@ -25,6 +25,14 @@ const documents: DeepReadonly<
   {
     mdPath: path.resolve(
       workspaceRootPath,
+      'src/content/docs/getting-started/introduction.md',
+    ),
+    samplesDir: path.resolve(synstateSamplesRoot, 'readme'),
+    sampleCodeFiles: ['01-simple-state.mts'],
+  },
+  {
+    mdPath: path.resolve(
+      workspaceRootPath,
       'src/content/docs/getting-started/quick-start.md',
     ),
     samplesDir: path.resolve(synstateSamplesRoot, 'readme'),
@@ -42,17 +50,26 @@ const documents: DeepReadonly<
     sampleCodeFiles: [
       '02-synstate-react-hooks-example.tsx',
       '03-react-18-example.tsx',
-      '06-global-counter.tsx',
-      '07-todo-reducer.tsx',
-      '08-dark-mode.tsx',
-      '09-cross-component.tsx',
       '04-react-example.tsx',
     ],
   },
   {
     mdPath: path.resolve(
       workspaceRootPath,
-      'src/content/docs/examples/index.md',
+      'src/content/docs/examples/react.md',
+    ),
+    samplesDir: path.resolve(synstateSamplesRoot, 'readme'),
+    sampleCodeFiles: [
+      '06-global-counter.tsx',
+      '07-todo-reducer.tsx',
+      '08-dark-mode.tsx',
+      '09-cross-component.tsx',
+    ],
+  },
+  {
+    mdPath: path.resolve(
+      workspaceRootPath,
+      'src/content/docs/examples/advanced.md',
     ),
     samplesDir: path.resolve(synstateSamplesRoot, 'readme'),
     sampleCodeFiles: [
