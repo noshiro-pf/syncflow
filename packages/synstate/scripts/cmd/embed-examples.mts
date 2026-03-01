@@ -40,7 +40,10 @@ const documents: DeepReadonly<
       workspaceRootPath,
       'samples/how-synstate-solved-the-glitch',
     ),
-    sampleCodeFiles: ['01-simple-glitch-example.mts'],
+    sampleCodeFiles: [
+      '01-simple-glitch-example.mts',
+      '01-simple-glitch-example.rxjs.mts',
+    ],
   },
 ] as const;
 

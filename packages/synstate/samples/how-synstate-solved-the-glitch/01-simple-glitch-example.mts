@@ -1,9 +1,7 @@
 import { collectToArray, combine, counter, map, take } from 'synstate';
 
-if (import.meta.vitest !== undefined) {
-  test('simple-glitch-example', async () => {
-    // embed-sample-code-ignore-above
-
+/* embed-sample-code-ignore-this-line */ if (import.meta.vitest !== undefined) {
+  /* embed-sample-code-ignore-this-line */ test('simple-glitch-example', async () => {
     const counterObservable = counter(1000 /* ms */);
     // 0, 1, 2, 3, ...
 
@@ -17,8 +15,6 @@ if (import.meta.vitest !== undefined) {
     );
     // 0, 1001, 2002, 3003, ...
 
-    // embed-sample-code-ignore-below
-
     const resultPromise = collectToArray(sum.pipe(take(5)));
 
     counterObservable.start();
@@ -26,5 +22,7 @@ if (import.meta.vitest !== undefined) {
     const result = await resultPromise;
 
     assert.deepStrictEqual(result, [0, 1001, 2002, 3003, 4004]);
+
+    // embed-sample-code-ignore-below
   });
 }

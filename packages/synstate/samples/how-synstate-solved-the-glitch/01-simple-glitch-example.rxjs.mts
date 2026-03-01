@@ -7,8 +7,8 @@ import {
   toArray,
 } from 'rxjs';
 
-if (import.meta.vitest !== undefined) {
-  test('simple-glitch-example (RxJS)', async () => {
+/* embed-sample-code-ignore-this-line */ if (import.meta.vitest !== undefined) {
+  /* embed-sample-code-ignore-this-line */ test('simple-glitch-example (RxJS)', async () => {
     const counterObservable = interval(100);
     // 0, 1, 2, 3, ...
 
@@ -20,6 +20,13 @@ if (import.meta.vitest !== undefined) {
     const sum = combineLatest([multipliedCounter, counterObservable]).pipe(
       map(([a, b]) => a + b),
     );
+    // 0, 1000, 1001, 2001, 2002, 3002, 3003, ...
+
+    const result = await lastValueFrom(sum.pipe(take(7), toArray()));
+
+    assert.deepStrictEqual(result, [0, 1000, 1001, 2001, 2002, 3002, 3003]);
+
+    // embed-sample-code-ignore-below
 
     // In RxJS, when counterObservable emits a new value,
     // multipliedCounter (which subscribes to counterObservable) updates first,
@@ -33,9 +40,5 @@ if (import.meta.vitest !== undefined) {
     //                                  sum: 2000+2 = 2002 ✓
     //   counter: 3 → multiplied: 3000, sum: 3000+2 = 3002 ✗ glitch (counter still 2)
     //                                  sum: 3000+3 = 3003 ✓
-
-    const result = await lastValueFrom(sum.pipe(take(7), toArray()));
-
-    assert.deepStrictEqual(result, [0, 1000, 1001, 2001, 2002, 3002, 3003]);
   });
 }

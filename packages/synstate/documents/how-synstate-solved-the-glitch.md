@@ -27,8 +27,8 @@ multipliedCounter          counterObservable
 
 In code:
 
-```ts
-import { combine, counter, map } from 'synstate';
+```tsx
+import { collectToArray, combine, counter, map, take } from 'synstate';
 
 const counterObservable = counter(1000 /* ms */);
 // 0, 1, 2, 3, ...
@@ -39,7 +39,15 @@ const multipliedCounter = counterObservable.pipe(map((count) => count * 1000));
 const sum = combine([multipliedCounter, counterObservable]).pipe(
     map(([a, b]) => a + b),
 );
-// Expected: 0, 1001, 2002, 3003, ...
+// 0, 1001, 2002, 3003, ...
+
+const resultPromise = collectToArray(sum.pipe(take(5)));
+
+counterObservable.start();
+
+const result = await resultPromise;
+
+assert.deepStrictEqual(result, [0, 1001, 2002, 3003, 4004]);
 ```
 
 Both `multipliedCounter` and the second input to `combine` originate from the same source (`counterObservable`). Whenever `counterObservable` emits a new value, both inputs to `combine` should update **together** — and `sum` should always equal `counter * 1001`.
@@ -74,6 +82,32 @@ The full output sequence of `sum` in RxJS is:
 The values `1000`, `2001`, `3002`, ... are **glitches** — they represent states where `multipliedCounter` has already updated but `counterObservable` has not yet propagated to `combineLatest`. These values should never exist logically (`sum` should always be a multiple of `1001`), yet they are emitted to subscribers, potentially causing incorrect UI rendering, invalid API calls, or subtle bugs.
 
 You can verify this behavior by running the RxJS sample code in [`01-simple-glitch-example.rxjs.mts`](../samples/how-synstate-solved-the-glitch/01-simple-glitch-example.rxjs.mts).
+
+```tsx
+import {
+    combineLatest,
+    interval,
+    lastValueFrom,
+    map,
+    take,
+    toArray,
+} from 'rxjs';
+
+const counterObservable = interval(100);
+// 0, 1, 2, 3, ...
+
+const multipliedCounter = counterObservable.pipe(map((count) => count * 1000));
+// 0, 1000, 2000, 3000, ...
+
+const sum = combineLatest([multipliedCounter, counterObservable]).pipe(
+    map(([a, b]) => a + b),
+);
+// 0, 1000, 1001, 2001, 2002, 3002, 3003, ...
+
+const result = await lastValueFrom(sum.pipe(take(7), toArray()));
+
+assert.deepStrictEqual(result, [0, 1000, 1001, 2001, 2002, 3002, 3003]);
+```
 
 ### Timeline
 
