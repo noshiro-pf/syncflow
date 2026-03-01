@@ -27,7 +27,7 @@ setState(1);
 assert.deepStrictEqual(stateHistory, [0, 1]);
 ```
 
-## React and Global State
+## With React
 
 ```tsx
 import type * as React from 'react';

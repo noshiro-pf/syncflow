@@ -1,5 +1,7 @@
 ---
 title: Advanced Examples
+sidebar:
+    order: 1
 ---
 
 ## Search with Debounce
@@ -9,14 +11,14 @@ A debounced search pipeline with automatic cancellation using `switchMap`:
 ```tsx
 import type * as React from 'react';
 import {
-  createState,
-  debounce,
-  filter,
-  fromPromise,
-  type InitializedObservable,
-  map,
-  switchMap,
-  withInitialValue,
+    createState,
+    debounce,
+    filter,
+    fromPromise,
+    type InitializedObservable,
+    map,
+    switchMap,
+    withInitialValue,
 } from 'synstate';
 import { useObservableValue } from 'synstate-react-hooks';
 import { Result } from 'ts-data-forge';
@@ -25,44 +27,44 @@ const [searchState, setSearchState] = createState('');
 
 // Advanced reactive pipeline with debounce and filtering
 const searchResults$: InitializedObservable<
-  readonly Readonly<{ id: string; name: string }>[]
+    readonly Readonly<{ id: string; name: string }>[]
 > = searchState
-  .pipe(debounce(300))
-  .pipe(filter((query) => query.length > 2))
-  .pipe(
-    switchMap((query) =>
-      fromPromise(
-        fetch(`/api/search?q=${query}`).then(
-          (r) =>
-            r.json() as Promise<
-              readonly Readonly<{ id: string; name: string }>[]
-            >,
+    .pipe(debounce(300))
+    .pipe(filter((query) => query.length > 2))
+    .pipe(
+        switchMap((query) =>
+            fromPromise(
+                fetch(`/api/search?q=${query}`).then(
+                    (r) =>
+                        r.json() as Promise<
+                            readonly Readonly<{ id: string; name: string }>[]
+                        >,
+                ),
+            ),
         ),
-      ),
-    ),
-  )
-  .pipe(filter((res) => Result.isOk(res)))
-  .pipe(map((res) => Result.unwrapOk(res)))
-  .pipe(withInitialValue([]));
+    )
+    .pipe(filter((res) => Result.isOk(res)))
+    .pipe(map((res) => Result.unwrapOk(res)))
+    .pipe(withInitialValue([]));
 
 const SearchBox = (): React.JSX.Element => {
-  const searchResults = useObservableValue(searchResults$);
+    const searchResults = useObservableValue(searchResults$);
 
-  return (
-    <div>
-      <input
-        placeholder={'Search...'}
-        onChange={(e) => {
-          setSearchState(e.target.value);
-        }}
-      />
-      <ul>
-        {searchResults.map((item) => (
-          <li key={item.id}>{item.name}</li>
-        ))}
-      </ul>
-    </div>
-  );
+    return (
+        <div>
+            <input
+                placeholder={'Search...'}
+                onChange={(e) => {
+                    setSearchState(e.target.value);
+                }}
+            />
+            <ul>
+                {searchResults.map((item) => (
+                    <li key={item.id}>{item.name}</li>
+                ))}
+            </ul>
+        </div>
+    );
 };
 ```
 
@@ -76,26 +78,26 @@ const [refreshClicked, onRefreshClick] = createEventEmitter();
 
 // Subscribe to events
 refreshClicked.subscribe(() => {
-  console.log('Refresh Clicked');
+    console.log('Refresh Clicked');
 });
 
 // Throttle refresh clicks to prevent rapid successive executions
 const throttledRefresh = refreshClicked.pipe(throttle(2000));
 
 throttledRefresh.subscribe(() => {
-  console.log('Executing refresh...');
-  // Actual refresh logic here
-  // This will be called at most once every 2 seconds
+    console.log('Executing refresh...');
+    // Actual refresh logic here
+    // This will be called at most once every 2 seconds
 });
 
 const DataTable = (): React.JSX.Element => (
-  <div>
-    <button onClick={onRefreshClick}>{'Refresh'}</button>
-    <p>
-      {'Data: '}
-      {/* Display data here */}
-    </p>
-  </div>
+    <div>
+        <button onClick={onRefreshClick}>{'Refresh'}</button>
+        <p>
+            {'Data: '}
+            {/* Display data here */}
+        </p>
+    </div>
 );
 ```
 
@@ -104,7 +106,7 @@ const DataTable = (): React.JSX.Element => (
 ```tsx
 // Create a reactive state
 const [state, setState, { updateState, resetState, getSnapshot }] =
-  createState(0);
+    createState(0);
 // type of state: InitializedObservable<number>
 // type of setState: (v: number) => number
 // type of updateState: (updater: (prev: number) => number) => number
@@ -115,7 +117,7 @@ const stateHistory: number[] = [];
 
 // Subscribe to changes
 state.subscribe((count) => {
-  stateHistory.push(count);
+    stateHistory.push(count);
 });
 
 assert.deepStrictEqual(stateHistory, [0]);
