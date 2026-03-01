@@ -9,7 +9,7 @@
 [![npm version](https://img.shields.io/npm/v/synstate.svg)](https://www.npmjs.com/package/synstate)
 [![npm downloads](https://img.shields.io/npm/dm/synstate.svg)](https://www.npmjs.com/package/synstate)
 [![License](https://img.shields.io/npm/l/synstate.svg)](./LICENSE)
-[![codecov](https://codecov.io/gh/noshiro-pf/synstate/branch/main/graph/badge.svg?token=********)](https://codecov.io/gh/noshiro-pf/synstate)
+[![codecov](https://codecov.io/gh/noshiro-pf/synstate/graph/badge.svg?token=xrJgTVxMpr)](https://codecov.io/gh/noshiro-pf/synstate)
 
 </p>
 

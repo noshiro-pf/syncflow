@@ -4,10 +4,14 @@
   "private": true,
   "type": "module",
   "scripts": {
+    "build": "pnpm run doc:embed && astro build",
     "dev": "astro dev",
     "doc:embed": "tsx ./scripts/embed-examples.mts",
-    "build": "pnpm run doc:embed && astro build",
-    "preview": "astro preview"
+    "fmt": "pnpm run z:prettier .",
+    "lint": "eslint .",
+    "lint:fix": "eslint . --fix",
+    "preview": "astro preview",
+    "z:prettier": "prettier --config ../../.prettierrc --ignore-path ../../.prettierignore --ignore-path ../../.gitignore --ignore-unknown --no-error-on-unmatched-pattern --write"
   },
   "dependencies": {
     "@astrojs/starlight": "^0.37.0",

@@ -1,6 +1,6 @@
 import 'ts-repo-utils';
-
-const docsRoot = path.resolve(import.meta.dirname, '..');
+import { extractSampleCode } from './embed-examples-utils.mjs';
+import { workspaceRootPath } from './workspace-root-path.mjs';
 
 const synstateSamplesRoot = path.resolve(
   import.meta.dirname,
@@ -10,53 +10,6 @@ const synstateSamplesRoot = path.resolve(
 const codeBlockStart = '```tsx';
 
 const codeBlockEnd = '```';
-
-// --- extractSampleCode (inlined from embed-examples-utils.mts) ---
-
-const ignoreAboveKeyword = '// embed-sample-code-ignore-above';
-
-const ignoreBelowKeyword = '// embed-sample-code-ignore-below';
-
-const ignoreLineKeyword = '/* embed-sample-code-ignore-this-line */';
-
-const normalizeIndent = (source: string): string => {
-  const lines = source.split('\n');
-
-  const indents = lines
-    .filter((line) => line.length > 0)
-    .map((line) => {
-      const match = /^ */u.exec(line);
-
-      return match !== null ? match[0].length : 0;
-    });
-
-  if (indents.length === 0) {
-    return source;
-  }
-
-  const minIndent = Math.min(...indents);
-
-  return lines.map((line) => line.slice(minIndent)).join('\n');
-};
-
-const extractSampleCode = (content: string): string => {
-  const startIndex = content.indexOf(ignoreAboveKeyword);
-
-  const endIndex = content.indexOf(ignoreBelowKeyword);
-
-  const start = startIndex === -1 ? 0 : startIndex + ignoreAboveKeyword.length;
-
-  const end = endIndex === -1 ? content.length : endIndex;
-
-  const sliced = content.slice(start, end);
-
-  const filtered = sliced
-    .split('\n')
-    .filter((line) => !line.trimStart().startsWith(ignoreLineKeyword))
-    .join('\n');
-
-  return normalizeIndent(filtered).trim();
-};
 
 // --- Document → Sample mapping ---
 
@@ -69,7 +22,7 @@ const documents: DeepReadonly<
 > = [
   {
     mdPath: path.resolve(
-      docsRoot,
+      workspaceRootPath,
       'src/content/docs/getting-started/quick-start.md',
     ),
     samplesDir: path.resolve(synstateSamplesRoot, 'readme'),
@@ -80,7 +33,7 @@ const documents: DeepReadonly<
   },
   {
     mdPath: path.resolve(
-      docsRoot,
+      workspaceRootPath,
       'src/content/docs/guides/react-integration.md',
     ),
     samplesDir: path.resolve(synstateSamplesRoot, 'readme'),
@@ -95,7 +48,10 @@ const documents: DeepReadonly<
     ],
   },
   {
-    mdPath: path.resolve(docsRoot, 'src/content/docs/examples/index.md'),
+    mdPath: path.resolve(
+      workspaceRootPath,
+      'src/content/docs/examples/index.md',
+    ),
     samplesDir: path.resolve(synstateSamplesRoot, 'readme'),
     sampleCodeFiles: [
       '10-search-debounce.tsx',
@@ -104,7 +60,7 @@ const documents: DeepReadonly<
   },
   {
     mdPath: path.resolve(
-      docsRoot,
+      workspaceRootPath,
       'src/content/docs/guides/how-synstate-solved-the-glitch.md',
     ),
     samplesDir: path.resolve(

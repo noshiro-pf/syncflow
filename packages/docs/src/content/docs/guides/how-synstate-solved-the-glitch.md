@@ -1,7 +1,7 @@
 ---
 title: How SynState Solved the Glitch
 sidebar:
-  order: 3
+    order: 3
 ---
 
 ## What Is a Glitch?
@@ -34,26 +34,24 @@ In code:
 ```tsx
 import { collectToArray, combine, counter, map, take } from 'synstate';
 
-    const counterObservable = counter(1000 /* ms */);
-    // 0, 1, 2, 3, ...
+const counterObservable = counter(1000 /* ms */);
+// 0, 1, 2, 3, ...
 
-    const multipliedCounter = counterObservable.pipe(
-      map((count) => count * 1000),
-    );
-    // 0, 1000, 2000, 3000, ...
+const multipliedCounter = counterObservable.pipe(map((count) => count * 1000));
+// 0, 1000, 2000, 3000, ...
 
-    const sum = combine([multipliedCounter, counterObservable]).pipe(
-      map(([a, b]) => a + b),
-    );
-    // 0, 1001, 2002, 3003, ...
+const sum = combine([multipliedCounter, counterObservable]).pipe(
+    map(([a, b]) => a + b),
+);
+// 0, 1001, 2002, 3003, ...
 
-    const resultPromise = collectToArray(sum.pipe(take(5)));
+const resultPromise = collectToArray(sum.pipe(take(5)));
 
-    counterObservable.start();
+counterObservable.start();
 
-    const result = await resultPromise;
+const result = await resultPromise;
 
-    assert.deepStrictEqual(result, [0, 1001, 2002, 3003, 4004]);
+assert.deepStrictEqual(result, [0, 1001, 2002, 3003, 4004]);
 ```
 
 Both `multipliedCounter` and the second input to `combine` originate from the same source (`counterObservable`). Whenever `counterObservable` emits a new value, both inputs to `combine` should update **together** — and `sum` should always equal `counter * 1001`.
@@ -91,30 +89,28 @@ You can verify this behavior by running the RxJS sample code in `01-simple-glitc
 
 ```tsx
 import {
-  combineLatest,
-  interval,
-  lastValueFrom,
-  map,
-  take,
-  toArray,
+    combineLatest,
+    interval,
+    lastValueFrom,
+    map,
+    take,
+    toArray,
 } from 'rxjs';
 
-    const counterObservable = interval(100);
-    // 0, 1, 2, 3, ...
+const counterObservable = interval(100);
+// 0, 1, 2, 3, ...
 
-    const multipliedCounter = counterObservable.pipe(
-      map((count) => count * 1000),
-    );
-    // 0, 1000, 2000, 3000, ...
+const multipliedCounter = counterObservable.pipe(map((count) => count * 1000));
+// 0, 1000, 2000, 3000, ...
 
-    const sum = combineLatest([multipliedCounter, counterObservable]).pipe(
-      map(([a, b]) => a + b),
-    );
-    // 0, 1000, 1001, 2001, 2002, 3002, 3003, ...
+const sum = combineLatest([multipliedCounter, counterObservable]).pipe(
+    map(([a, b]) => a + b),
+);
+// 0, 1000, 1001, 2001, 2002, 3002, 3003, ...
 
-    const result = await lastValueFrom(sum.pipe(take(7), toArray()));
+const result = await lastValueFrom(sum.pipe(take(7), toArray()));
 
-    assert.deepStrictEqual(result, [0, 1000, 1001, 2001, 2002, 3002, 3003]);
+assert.deepStrictEqual(result, [0, 1000, 1001, 2001, 2002, 3002, 3003]);
 ```
 
 ### Timeline
@@ -148,48 +144,48 @@ You can verify this behavior by running the MobX sample code in `01-simple-glitc
 ```tsx
 import { computed, observable, reaction, runInAction } from 'mobx';
 
-    const state = observable({ counter: 0 });
+const state = observable({ counter: 0 });
 
-    const multipliedCounter = computed(() => state.counter * 1000);
-    // 0, 1000, 2000, 3000, ...
+const multipliedCounter = computed(() => state.counter * 1000);
+// 0, 1000, 2000, 3000, ...
 
-    const sum = computed(() => multipliedCounter.get() + state.counter);
-    // Expected: 0, 1001, 2002, 3003, ...
+const sum = computed(() => multipliedCounter.get() + state.counter);
+// Expected: 0, 1001, 2002, 3003, ...
 
-    const valueHistory: number[] = [];
+const valueHistory: number[] = [];
 
-    const dispose = reaction(
-      () => sum.get(),
-      (value) => {
+const dispose = reaction(
+    () => sum.get(),
+    (value) => {
         valueHistory.push(value);
-      },
-      { fireImmediately: true },
-    );
+    },
+    { fireImmediately: true },
+);
 
-    await new Promise<void>((resolve) => {
-      let mut_count = 0;
+await new Promise<void>((resolve) => {
+    let mut_count = 0;
 
-      const interval = setInterval(() => {
+    const interval = setInterval(() => {
         mut_count += 1;
 
         runInAction(() => {
-          state.counter = mut_count;
+            state.counter = mut_count;
         });
 
         if (mut_count >= 4) {
-          clearInterval(interval);
+            clearInterval(interval);
 
-          dispose();
+            dispose();
 
-          resolve();
+            resolve();
         }
-      }, 100);
-    });
+    }, 100);
+});
 
-    // MobX computed values are lazily evaluated:
-    // when `sum` is accessed, it first recomputes `multipliedCounter`,
-    // so all values are consistent — no glitch.
-    assert.deepStrictEqual(valueHistory, [0, 1001, 2002, 3003, 4004]);
+// MobX computed values are lazily evaluated:
+// when `sum` is accessed, it first recomputes `multipliedCounter`,
+// so all values are consistent — no glitch.
+assert.deepStrictEqual(valueHistory, [0, 1001, 2002, 3003, 4004]);
 ```
 
 ## What Happens in Jotai (Glitch-Free)
@@ -201,50 +197,50 @@ You can verify this behavior by running the Jotai sample code in `01-simple-glit
 ```tsx
 import { atom, createStore } from 'jotai/vanilla';
 
-    // Jotai supports diamond dependencies natively through derived atoms.
-    // Derived atoms are lazily evaluated — when a subscriber reads `sumAtom`,
-    // it triggers recomputation of `multipliedAtom` first,
-    // so all values are always consistent.
+// Jotai supports diamond dependencies natively through derived atoms.
+// Derived atoms are lazily evaluated — when a subscriber reads `sumAtom`,
+// it triggers recomputation of `multipliedAtom` first,
+// so all values are always consistent.
 
-    const counterAtom = atom(0);
+const counterAtom = atom(0);
 
-    const multipliedAtom = atom((get) => get(counterAtom) * 1000);
-    // 0, 1000, 2000, 3000, ...
+const multipliedAtom = atom((get) => get(counterAtom) * 1000);
+// 0, 1000, 2000, 3000, ...
 
-    const sumAtom = atom((get) => get(multipliedAtom) + get(counterAtom));
-    // Expected: 0, 1001, 2002, 3003, ...
+const sumAtom = atom((get) => get(multipliedAtom) + get(counterAtom));
+// Expected: 0, 1001, 2002, 3003, ...
 
-    const store = createStore();
+const store = createStore();
 
-    const valueHistory: number[] = [];
+const valueHistory: number[] = [];
 
-    // Record initial value
+// Record initial value
+valueHistory.push(store.get(sumAtom));
+
+// Subscribe to future changes
+store.sub(sumAtom, () => {
     valueHistory.push(store.get(sumAtom));
+});
 
-    // Subscribe to future changes
-    store.sub(sumAtom, () => {
-      valueHistory.push(store.get(sumAtom));
-    });
+await new Promise<void>((resolve) => {
+    let mut_count = 0;
 
-    await new Promise<void>((resolve) => {
-      let mut_count = 0;
-
-      const interval = setInterval(() => {
+    const interval = setInterval(() => {
         mut_count += 1;
 
         store.set(counterAtom, mut_count);
 
         if (mut_count >= 4) {
-          clearInterval(interval);
+            clearInterval(interval);
 
-          resolve();
+            resolve();
         }
-      }, 100);
-    });
+    }, 100);
+});
 
-    // Jotai derived atoms are lazily evaluated (like MobX computed),
-    // so diamond dependencies are always consistent — no glitch.
-    assert.deepStrictEqual(valueHistory, [0, 1001, 2002, 3003, 4004]);
+// Jotai derived atoms are lazily evaluated (like MobX computed),
+// so diamond dependencies are always consistent — no glitch.
+assert.deepStrictEqual(valueHistory, [0, 1001, 2002, 3003, 4004]);
 ```
 
 ## What Happens in Redux / Zustand (No Diamond Dependency)
@@ -262,67 +258,67 @@ You can verify this behavior by running the Redux sample code in `01-simple-glit
 ```tsx
 import { configureStore, createSelector, createSlice } from '@reduxjs/toolkit';
 
-    // Redux uses a single immutable state tree.
-    // Derived values are computed via "selectors" — pure functions
-    // that read from the state snapshot.
-    // Since all selectors read from the same snapshot,
-    // there is no propagation graph and thus no diamond dependency.
+// Redux uses a single immutable state tree.
+// Derived values are computed via "selectors" — pure functions
+// that read from the state snapshot.
+// Since all selectors read from the same snapshot,
+// there is no propagation graph and thus no diamond dependency.
 
-    const counterSlice = createSlice({
-      name: 'counter',
-      initialState: { value: 0 },
-      reducers: {
+const counterSlice = createSlice({
+    name: 'counter',
+    initialState: { value: 0 },
+    reducers: {
         set: (state, action: Readonly<{ payload: number }>) => {
-          state.value = action.payload;
+            state.value = action.payload;
         },
-      },
-    });
+    },
+});
 
-    const store = configureStore({ reducer: counterSlice.reducer });
+const store = configureStore({ reducer: counterSlice.reducer });
 
-    const selectCounter = (state: Readonly<{ value: number }>): number =>
-      state.value;
+const selectCounter = (state: Readonly<{ value: number }>): number =>
+    state.value;
 
-    const selectMultiplied = createSelector(
-      selectCounter,
-      (counter) => counter * 1000,
-    );
+const selectMultiplied = createSelector(
+    selectCounter,
+    (counter) => counter * 1000,
+);
 
-    const selectSum = createSelector(
-      selectMultiplied,
-      selectCounter,
-      (multiplied, counter) => multiplied + counter,
-    );
+const selectSum = createSelector(
+    selectMultiplied,
+    selectCounter,
+    (multiplied, counter) => multiplied + counter,
+);
 
-    const valueHistory: number[] = [];
+const valueHistory: number[] = [];
 
-    // Record initial value
+// Record initial value
+valueHistory.push(selectSum(store.getState()));
+
+// Subscribe to future changes
+store.subscribe(() => {
     valueHistory.push(selectSum(store.getState()));
+});
 
-    // Subscribe to future changes
-    store.subscribe(() => {
-      valueHistory.push(selectSum(store.getState()));
-    });
+await new Promise<void>((resolve) => {
+    let mut_count = 0;
 
-    await new Promise<void>((resolve) => {
-      let mut_count = 0;
-
-      const interval = setInterval(() => {
+    const interval = setInterval(() => {
         mut_count += 1;
 
         store.dispatch(counterSlice.actions.set(mut_count));
 
         if (mut_count >= 4) {
-          clearInterval(interval);
+            clearInterval(interval);
 
-          resolve();
+            resolve();
         }
-      }, 100);
-    });
+    }, 100);
+});
 
-    // Redux selectors always read from a single consistent state snapshot,
-    // so diamond dependencies are structurally impossible — no glitch.
-    assert.deepStrictEqual(valueHistory, [0, 1001, 2002, 3003, 4004]);
+// Redux selectors always read from a single consistent state snapshot,
+// so diamond dependencies are structurally impossible — no glitch.
+assert.deepStrictEqual(valueHistory, [0, 1001, 2002, 3003, 4004]);
 ```
 
 ### Zustand
@@ -332,46 +328,46 @@ You can verify this behavior by running the Zustand sample code in `01-simple-gl
 ```tsx
 import { createStore } from 'zustand/vanilla';
 
-    // Zustand uses a single store object, similar to Redux.
-    // Derived values are computed via selector functions
-    // that read from the store's state snapshot.
-    // Since all selectors read from the same snapshot,
-    // there is no propagation graph and thus no diamond dependency.
+// Zustand uses a single store object, similar to Redux.
+// Derived values are computed via selector functions
+// that read from the store's state snapshot.
+// Since all selectors read from the same snapshot,
+// there is no propagation graph and thus no diamond dependency.
 
-    const store = createStore<Readonly<{ counter: number }>>()(() => ({
-      counter: 0,
-    }));
+const store = createStore<Readonly<{ counter: number }>>()(() => ({
+    counter: 0,
+}));
 
-    const selectSum = (state: Readonly<{ counter: number }>): number =>
-      state.counter * 1000 + state.counter;
+const selectSum = (state: Readonly<{ counter: number }>): number =>
+    state.counter * 1000 + state.counter;
 
-    // Record initial value
-    const valueHistory: number[] = [selectSum(store.getState())];
+// Record initial value
+const valueHistory: number[] = [selectSum(store.getState())];
 
-    // Subscribe to future changes
-    store.subscribe((state) => {
-      valueHistory.push(selectSum(state));
-    });
+// Subscribe to future changes
+store.subscribe((state) => {
+    valueHistory.push(selectSum(state));
+});
 
-    await new Promise<void>((resolve) => {
-      let mut_count = 0;
+await new Promise<void>((resolve) => {
+    let mut_count = 0;
 
-      const interval = setInterval(() => {
+    const interval = setInterval(() => {
         mut_count += 1;
 
         store.setState({ counter: mut_count });
 
         if (mut_count >= 4) {
-          clearInterval(interval);
+            clearInterval(interval);
 
-          resolve();
+            resolve();
         }
-      }, 100);
-    });
+    }, 100);
+});
 
-    // Zustand selectors always read from a single consistent state snapshot,
-    // so diamond dependencies are structurally impossible — no glitch.
-    assert.deepStrictEqual(valueHistory, [0, 1001, 2002, 3003, 4004]);
+// Zustand selectors always read from a single consistent state snapshot,
+// so diamond dependencies are structurally impossible — no glitch.
+assert.deepStrictEqual(valueHistory, [0, 1001, 2002, 3003, 4004]);
 ```
 
 ## What Happens in SynState (Glitch-Free)
