@@ -125,6 +125,34 @@ importers:
       astro:
         specifier: ^5.5.0
         version: 5.17.3(@types/node@25.3.0)(jiti@2.6.1)(rollup@4.57.1)(tsx@4.21.0)(typescript@5.9.3)(yaml@2.8.2)
+    devDependencies:
+      '@reduxjs/toolkit':
+        specifier: ^2.8.2
+        version: 2.11.2(react@19.2.4)
+      '@types/argparse':
+        specifier: ^2.0.17
+        version: 2.0.17
+      '@types/react':
+        specifier: ^19.2.14
+        version: 19.2.14
+      argparse:
+        specifier: ^2.0.1
+        version: 2.0.1
+      jotai:
+        specifier: ^2.12.5
+        version: 2.18.0(@babel/core@7.29.0)(@babel/template@7.28.6)(@types/react@19.2.14)(react@19.2.4)
+      mobx:
+        specifier: ^6.13.8
+        version: 6.15.0
+      react:
+        specifier: ^19.2.4
+        version: 19.2.4
+      rxjs:
+        specifier: ^7.8.2
+        version: 7.8.2
+      zustand:
+        specifier: ^5.0.5
+        version: 5.0.11(@types/react@19.2.14)(immer@11.1.4)(react@19.2.4)
 
   packages/synstate:
     dependencies:

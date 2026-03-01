@@ -37,6 +37,7 @@ export default [
           allow: [
             ...eslintImportsRules['import-x/no-internal-modules'][1].allow,
             'zustand/vanilla',
+            'jotai/vanilla',
           ],
         },
       ],
@@ -56,13 +57,6 @@ export default [
     }),
   },
 
-  {
-    files: ['src/**'],
-    rules: defineKnownRules({
-      'functional/no-class-inheritance': 'off',
-    }),
-  },
-
   ...eslintConfigForReact(['samples/**']),
   {
     files: ['samples/**'],
@@ -74,6 +68,7 @@ export default [
       'react/no-array-index-key': 'off',
       'functional/immutable-data': 'off',
       'functional/no-let': 'off',
+      'import-x/no-extraneous-dependencies': 'off',
     }),
   },
 ] satisfies readonly FlatConfig[];

@@ -1,3 +1,5 @@
+/* eslint-disable unicorn/consistent-function-scoping */
+// embed-sample-code-ignore-above
 import { configureStore, createSelector, createSlice } from '@reduxjs/toolkit';
 
 /* embed-sample-code-ignore-this-line */ if (import.meta.vitest !== undefined) {
@@ -34,10 +36,8 @@ import { configureStore, createSelector, createSlice } from '@reduxjs/toolkit';
       (multiplied, counter) => multiplied + counter,
     );
 
-    const valueHistory: number[] = [];
-
     // Record initial value
-    valueHistory.push(selectSum(store.getState()));
+    const valueHistory: number[] = [selectSum(store.getState())];
 
     // Subscribe to future changes
     store.subscribe(() => {

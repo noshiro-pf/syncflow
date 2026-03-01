@@ -85,7 +85,7 @@ The full output sequence of `sum` in RxJS is:
 
 The values `1000`, `2001`, `3002`, ... are **glitches** — they represent states where `multipliedCounter` has already updated but `counterObservable` has not yet propagated to `combineLatest`. These values should never exist logically (`sum` should always be a multiple of `1001`), yet they are emitted to subscribers, potentially causing incorrect UI rendering, invalid API calls, or subtle bugs.
 
-You can verify this behavior by running the RxJS sample code in `01-simple-glitch-example.rxjs.mts`.
+You can verify this behavior by running the RxJS sample code in [`01-simple-glitch-example.rxjs.mts`](https://github.com/noshiro-pf/synstate/blob/main/packages/docs/samples/how-synstate-solved-the-glitch/01-simple-glitch-example.rxjs.mts).
 
 ```tsx
 import {
@@ -139,7 +139,7 @@ When `counter` changes:
 
 Because `computed` values are lazily evaluated at the time of access, MobX never observes an inconsistent intermediate state in this scenario.
 
-You can verify this behavior by running the MobX sample code in `01-simple-glitch-example.mobx.mts`.
+You can verify this behavior by running the MobX sample code in [`01-simple-glitch-example.mobx.mts`](https://github.com/noshiro-pf/synstate/blob/main/packages/docs/samples/how-synstate-solved-the-glitch/01-simple-glitch-example.mobx.mts).
 
 ```tsx
 import { computed, observable, reaction, runInAction } from 'mobx';
@@ -192,7 +192,7 @@ assert.deepStrictEqual(valueHistory, [0, 1001, 2002, 3003, 4004]);
 
 Jotai uses an **atom-based** model where derived atoms can form a dependency graph — including diamond dependencies. Like MobX, derived atoms are **lazily evaluated**: when a subscriber reads `sumAtom`, it triggers recomputation of `multipliedAtom` first, ensuring all values are consistent.
 
-You can verify this behavior by running the Jotai sample code in `01-simple-glitch-example.jotai.mts`.
+You can verify this behavior by running the Jotai sample code in [`01-simple-glitch-example.jotai.mts`](https://github.com/noshiro-pf/synstate/blob/main/packages/docs/samples/how-synstate-solved-the-glitch/01-simple-glitch-example.jotai.mts).
 
 ```tsx
 import { atom, createStore } from 'jotai/vanilla';
@@ -253,7 +253,7 @@ However, this single-store model has a trade-off: it does not natively support r
 
 ### Redux
 
-You can verify this behavior by running the Redux sample code in `01-simple-glitch-example.redux.mts`.
+You can verify this behavior by running the Redux sample code in [`01-simple-glitch-example.redux.mts`](https://github.com/noshiro-pf/synstate/blob/main/packages/docs/samples/how-synstate-solved-the-glitch/01-simple-glitch-example.redux.mts).
 
 ```tsx
 import { configureStore, createSelector, createSlice } from '@reduxjs/toolkit';
@@ -323,7 +323,7 @@ assert.deepStrictEqual(valueHistory, [0, 1001, 2002, 3003, 4004]);
 
 ### Zustand
 
-You can verify this behavior by running the Zustand sample code in `01-simple-glitch-example.zustand.mts`.
+You can verify this behavior by running the Zustand sample code in [`01-simple-glitch-example.zustand.mts`](https://github.com/noshiro-pf/synstate/blob/main/packages/docs/samples/how-synstate-solved-the-glitch/01-simple-glitch-example.zustand.mts).
 
 ```tsx
 import { createStore } from 'zustand/vanilla';

@@ -5,7 +5,7 @@
   ],
   "compilerOptions": {
     "paths": {
-      "synstate": ["./src/entry-point.mts"],
+      "synstate": ["../synstate/src/entry-point.mts"],
       "synstate-react-hooks": ["../synstate-react-hooks/src/index.mts"]
     }
   },
