@@ -184,6 +184,61 @@ await new Promise<void>((resolve) => {
 assert.deepStrictEqual(valueHistory, [0, 1001, 2002, 3003, 4004]);
 ```
 
+## What Happens in Jotai (Glitch-Free)
+
+Jotai uses an **atom-based** model where derived atoms can form a dependency graph — including diamond dependencies. Like MobX, derived atoms are **lazily evaluated**: when a subscriber reads `sumAtom`, it triggers recomputation of `multipliedAtom` first, ensuring all values are consistent.
+
+You can verify this behavior by running the Jotai sample code in [`01-simple-glitch-example.jotai.mts`](../samples/how-synstate-solved-the-glitch/01-simple-glitch-example.jotai.mts).
+
+```tsx
+import { atom, createStore } from 'jotai/vanilla';
+
+// Jotai supports diamond dependencies natively through derived atoms.
+// Derived atoms are lazily evaluated — when a subscriber reads `sumAtom`,
+// it triggers recomputation of `multipliedAtom` first,
+// so all values are always consistent.
+
+const counterAtom = atom(0);
+
+const multipliedAtom = atom((get) => get(counterAtom) * 1000);
+// 0, 1000, 2000, 3000, ...
+
+const sumAtom = atom((get) => get(multipliedAtom) + get(counterAtom));
+// Expected: 0, 1001, 2002, 3003, ...
+
+const store = createStore();
+
+const valueHistory: number[] = [];
+
+// Record initial value
+valueHistory.push(store.get(sumAtom));
+
+// Subscribe to future changes
+store.sub(sumAtom, () => {
+    valueHistory.push(store.get(sumAtom));
+});
+
+await new Promise<void>((resolve) => {
+    let mut_count = 0;
+
+    const interval = setInterval(() => {
+        mut_count += 1;
+
+        store.set(counterAtom, mut_count);
+
+        if (mut_count >= 4) {
+            clearInterval(interval);
+
+            resolve();
+        }
+    }, 100);
+});
+
+// Jotai derived atoms are lazily evaluated (like MobX computed),
+// so diamond dependencies are always consistent — no glitch.
+assert.deepStrictEqual(valueHistory, [0, 1001, 2002, 3003, 4004]);
+```
+
 ## What Happens in Redux / Zustand (No Diamond Dependency)
 
 Redux and Zustand use a **single immutable state tree**. Derived values are not computed through a propagation graph but through **selector functions** — pure functions that take the current state snapshot and return a derived value.
@@ -199,11 +254,17 @@ You can verify this behavior by running the Redux sample code in [`01-simple-gli
 ```tsx
 import { configureStore, createSelector, createSlice } from '@reduxjs/toolkit';
 
+// Redux uses a single immutable state tree.
+// Derived values are computed via "selectors" — pure functions
+// that read from the state snapshot.
+// Since all selectors read from the same snapshot,
+// there is no propagation graph and thus no diamond dependency.
+
 const counterSlice = createSlice({
     name: 'counter',
     initialState: { value: 0 },
     reducers: {
-        set: (state, action: { payload: number }) => {
+        set: (state, action: Readonly<{ payload: number }>) => {
             state.value = action.payload;
         },
     },
@@ -211,7 +272,8 @@ const counterSlice = createSlice({
 
 const store = configureStore({ reducer: counterSlice.reducer });
 
-const selectCounter = (state: { value: number }) => state.value;
+const selectCounter = (state: Readonly<{ value: number }>): number =>
+    state.value;
 
 const selectMultiplied = createSelector(
     selectCounter,
@@ -226,14 +288,32 @@ const selectSum = createSelector(
 
 const valueHistory: number[] = [];
 
+// Record initial value
 valueHistory.push(selectSum(store.getState()));
 
+// Subscribe to future changes
 store.subscribe(() => {
     valueHistory.push(selectSum(store.getState()));
 });
 
-// ... dispatch actions to set counter to 1, 2, 3, 4 ...
+await new Promise<void>((resolve) => {
+    let mut_count = 0;
 
+    const interval = setInterval(() => {
+        mut_count += 1;
+
+        store.dispatch(counterSlice.actions.set(mut_count));
+
+        if (mut_count >= 4) {
+            clearInterval(interval);
+
+            resolve();
+        }
+    }, 100);
+});
+
+// Redux selectors always read from a single consistent state snapshot,
+// so diamond dependencies are structurally impossible — no glitch.
 assert.deepStrictEqual(valueHistory, [0, 1001, 2002, 3003, 4004]);
 ```
 
@@ -244,75 +324,47 @@ You can verify this behavior by running the Zustand sample code in [`01-simple-g
 ```tsx
 import { createStore } from 'zustand/vanilla';
 
-const store = createStore<{ counter: number }>()(() => ({
+// Zustand uses a single store object, similar to Redux.
+// Derived values are computed via selector functions
+// that read from the store's state snapshot.
+// Since all selectors read from the same snapshot,
+// there is no propagation graph and thus no diamond dependency.
+
+const store = createStore<Readonly<{ counter: number }>>()(() => ({
     counter: 0,
 }));
 
-const selectSum = (state: { counter: number }) =>
+const selectSum = (state: Readonly<{ counter: number }>): number =>
     state.counter * 1000 + state.counter;
 
-const valueHistory: number[] = [];
+// Record initial value
+const valueHistory: number[] = [selectSum(store.getState())];
 
-valueHistory.push(selectSum(store.getState()));
-
+// Subscribe to future changes
 store.subscribe((state) => {
     valueHistory.push(selectSum(state));
 });
 
-// ... setState to set counter to 1, 2, 3, 4 ...
+await new Promise<void>((resolve) => {
+    let mut_count = 0;
 
-assert.deepStrictEqual(valueHistory, [0, 1001, 2002, 3003, 4004]);
-```
+    const interval = setInterval(() => {
+        mut_count += 1;
 
-## What Happens in Jotai (Glitch-Free)
+        store.setState({ counter: mut_count });
 
-Jotai uses an **atom-based** model where derived atoms can form a dependency graph — including diamond dependencies. Like MobX, derived atoms are **lazily evaluated**: when a subscriber reads `sumAtom`, it triggers recomputation of `multipliedAtom` first, ensuring all values are consistent.
+        if (mut_count >= 4) {
+            clearInterval(interval);
 
-You can verify this behavior by running the Jotai sample code in [`01-simple-glitch-example.jotai.mts`](../samples/how-synstate-solved-the-glitch/01-simple-glitch-example.jotai.mts).
-
-```tsx
-import { atom, createStore } from 'jotai/vanilla';
-
-const counterAtom = atom(0);
-
-const multipliedAtom = atom((get) => get(counterAtom) * 1000);
-// 0, 1000, 2000, 3000, ...
-
-const sumAtom = atom((get) => get(multipliedAtom) + get(counterAtom));
-// 0, 1001, 2002, 3003, ... (glitch-free)
-
-const store = createStore();
-
-const valueHistory: number[] = [];
-
-valueHistory.push(store.get(sumAtom));
-
-store.sub(sumAtom, () => {
-    valueHistory.push(store.get(sumAtom));
+            resolve();
+        }
+    }, 100);
 });
 
-// ... set counterAtom to 1, 2, 3, 4 ...
-
+// Zustand selectors always read from a single consistent state snapshot,
+// so diamond dependencies are structurally impossible — no glitch.
 assert.deepStrictEqual(valueHistory, [0, 1001, 2002, 3003, 4004]);
 ```
-
-## Summary
-
-| Library  | Approach                        | Diamond Dependency | Glitch-Free? | Output                                  |
-| :------- | :------------------------------ | :----------------: | :----------: | :-------------------------------------- |
-| RxJS     | Push-based Observable (eager)   |    Yes (native)    |      No      | `0, 1000, 1001, 2001, 2002, 3002, 3003` |
-| MobX     | Pull-based computed (lazy)      |    Yes (native)    |     Yes      | `0, 1001, 2002, 3003, 4004`             |
-| Jotai    | Pull-based derived atom (lazy)  |    Yes (native)    |     Yes      | `0, 1001, 2002, 3003, 4004`             |
-| Redux    | Single store + selectors        |      N/A [^2]      |     Yes      | `0, 1001, 2002, 3003, 4004`             |
-| Zustand  | Single store + selectors        |      N/A [^2]      |     Yes      | `0, 1001, 2002, 3003, 4004`             |
-| SynState | Push-based Observable (ordered) |    Yes (native)    |     Yes      | `0, 1001, 2002, 3003, 4004`             |
-
-[^2]: Redux and Zustand use a single immutable state tree with selector functions. Since all selectors read from the same state snapshot, diamond dependencies do not arise in the first place.
-
-- **RxJS** is the only library that exhibits glitches in this scenario. Its push-based, eager propagation model notifies `combineLatest` as soon as any input changes, without waiting for other inputs sharing the same source to update.
-- **MobX** and **Jotai** avoid glitches through lazy (pull-based) evaluation of derived values. When a subscriber reads a derived value, all upstream dependencies are recomputed on demand.
-- **Redux** and **Zustand** avoid glitches structurally — their single-store model means all selectors always read from a consistent state snapshot. However, they cannot natively express reactive stream operations like `debounce` or `switchMap`.
-- **SynState** is unique in being both push-based (like RxJS) and glitch-free. It achieves this by ordering the propagation so that all inputs to a combinator are updated before the combinator itself evaluates.
 
 ## What Happens in SynState (Glitch-Free)
 
@@ -334,3 +386,21 @@ No intermediate states. No glitches. Every value emitted to subscribers is consi
 |    2 |                   1 |                1000 |                     **1001** ✓ |     Yes     |
 |    3 |                   2 |                2000 |                     **2002** ✓ |     Yes     |
 |    4 |                   3 |                3000 |                     **3003** ✓ |     Yes     |
+
+## Summary
+
+| Library  | Approach                        | Diamond Dependency | Glitch-Free? | Output                                  |
+| :------- | :------------------------------ | :----------------: | :----------: | :-------------------------------------- |
+| RxJS     | Push-based Observable (eager)   |    Yes (native)    |      No      | `0, 1000, 1001, 2001, 2002, 3002, 3003` |
+| MobX     | Pull-based computed (lazy)      |    Yes (native)    |     Yes      | `0, 1001, 2002, 3003, 4004`             |
+| Jotai    | Pull-based derived atom (lazy)  |    Yes (native)    |     Yes      | `0, 1001, 2002, 3003, 4004`             |
+| Redux    | Single store + selectors        |      N/A [^1]      |     Yes      | `0, 1001, 2002, 3003, 4004`             |
+| Zustand  | Single store + selectors        |      N/A [^1]      |     Yes      | `0, 1001, 2002, 3003, 4004`             |
+| SynState | Push-based Observable (ordered) |    Yes (native)    |     Yes      | `0, 1001, 2002, 3003, 4004`             |
+
+[^1]: Redux and Zustand use a single immutable state tree with selector functions. Since all selectors read from the same state snapshot, diamond dependencies do not arise in the first place.
+
+- **RxJS** is the only library that exhibits glitches in this scenario. Its push-based, eager propagation model notifies `combineLatest` as soon as any input changes, without waiting for other inputs sharing the same source to update.
+- **MobX** and **Jotai** avoid glitches through lazy (pull-based) evaluation of derived values. When a subscriber reads a derived value, all upstream dependencies are recomputed on demand.
+- **Redux** and **Zustand** avoid glitches structurally — their single-store model means all selectors always read from a consistent state snapshot. However, they cannot natively express reactive stream operations like `debounce` or `switchMap`.
+- **SynState** is unique in being both push-based (like RxJS) and glitch-free. It achieves this by ordering the propagation so that all inputs to a combinator are updated before the combinator itself evaluates.

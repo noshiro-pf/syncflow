@@ -44,6 +44,9 @@ const documents: DeepReadonly<
       '01-simple-glitch-example.synstate.mts',
       '01-simple-glitch-example.rxjs.mts',
       '01-simple-glitch-example.mobx.mts',
+      '01-simple-glitch-example.jotai.mts',
+      '01-simple-glitch-example.redux.mts',
+      '01-simple-glitch-example.zustand.mts',
     ],
   },
 ] as const;
