@@ -1,5 +1,7 @@
 ---
 title: Installation
+sidebar:
+    order: 2
 ---
 
 ```bash
