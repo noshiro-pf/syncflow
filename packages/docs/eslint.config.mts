@@ -19,7 +19,7 @@ export default [
   }),
 
   {
-    ignores: ['.astro/**'],
+    ignores: ['.astro/**', 'src/content.config.ts', 'astro.config.mjs'],
   },
 
   eslintConfigForTsDataForge(),

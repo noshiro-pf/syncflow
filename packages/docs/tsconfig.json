@@ -10,11 +10,11 @@
     }
   },
   "include": [
-    "astro.config.mjs",
     "./samples",
     "./src",
     "./test",
     "./scripts",
     "./configs"
-  ]
+  ],
+  "exclude": ["./src/content.config.ts"]
 }
