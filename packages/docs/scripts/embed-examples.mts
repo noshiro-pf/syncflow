@@ -30,7 +30,7 @@ const documents: DeepReadonly<
     samplesDir: path.resolve(synstateSamplesRoot, 'readme'),
     sampleCodeFiles: [
       '01-simple-state.mts',
-      '05-simple-state-with-additional-api.mts',
+      '02-synstate-react-hooks-example.tsx',
     ],
   },
   {
@@ -58,6 +58,7 @@ const documents: DeepReadonly<
     sampleCodeFiles: [
       '10-search-debounce.tsx',
       '11-event-emitter-throttle.tsx',
+      '05-simple-state-with-additional-api.mts',
     ],
   },
   {
