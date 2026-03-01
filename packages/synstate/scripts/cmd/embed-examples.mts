@@ -41,8 +41,9 @@ const documents: DeepReadonly<
       'samples/how-synstate-solved-the-glitch',
     ),
     sampleCodeFiles: [
-      '01-simple-glitch-example.mts',
+      '01-simple-glitch-example.synstate.mts',
       '01-simple-glitch-example.rxjs.mts',
+      '01-simple-glitch-example.mobx.mts',
     ],
   },
 ] as const;
