@@ -8,7 +8,7 @@
     "dev": "astro dev",
     "doc": "run-s doc:embed",
     "doc:embed": "tsx ./scripts/embed-examples.mts",
-    "fmt": "cd ../.. && format-uncommitted",
+    "fmt": "format-uncommitted",
     "fmt:full": "pnpm run z:prettier .",
     "lint": "eslint .",
     "lint:fix": "eslint . --fix",
