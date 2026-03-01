@@ -1,0 +1,185 @@
+import 'ts-repo-utils';
+
+const docsRoot = path.resolve(import.meta.dirname, '..');
+
+const synstateSamplesRoot = path.resolve(
+  import.meta.dirname,
+  '../../synstate/samples',
+);
+
+const codeBlockStart = '```tsx';
+
+const codeBlockEnd = '```';
+
+// --- extractSampleCode (inlined from embed-examples-utils.mts) ---
+
+const ignoreAboveKeyword = '// embed-sample-code-ignore-above';
+
+const ignoreBelowKeyword = '// embed-sample-code-ignore-below';
+
+const ignoreLineKeyword = '/* embed-sample-code-ignore-this-line */';
+
+const normalizeIndent = (source: string): string => {
+  const lines = source.split('\n');
+
+  const indents = lines
+    .filter((line) => line.length > 0)
+    .map((line) => {
+      const match = /^ */u.exec(line);
+
+      return match !== null ? match[0].length : 0;
+    });
+
+  if (indents.length === 0) {
+    return source;
+  }
+
+  const minIndent = Math.min(...indents);
+
+  return lines.map((line) => line.slice(minIndent)).join('\n');
+};
+
+const extractSampleCode = (content: string): string => {
+  const startIndex = content.indexOf(ignoreAboveKeyword);
+
+  const endIndex = content.indexOf(ignoreBelowKeyword);
+
+  const start = startIndex === -1 ? 0 : startIndex + ignoreAboveKeyword.length;
+
+  const end = endIndex === -1 ? content.length : endIndex;
+
+  const sliced = content.slice(start, end);
+
+  const filtered = sliced
+    .split('\n')
+    .filter((line) => !line.trimStart().startsWith(ignoreLineKeyword))
+    .join('\n');
+
+  return normalizeIndent(filtered).trim();
+};
+
+// --- Document → Sample mapping ---
+
+const documents: DeepReadonly<
+  {
+    mdPath: string;
+    samplesDir: string;
+    sampleCodeFiles: string[];
+  }[]
+> = [
+  {
+    mdPath: path.resolve(
+      docsRoot,
+      'src/content/docs/getting-started/quick-start.md',
+    ),
+    samplesDir: path.resolve(synstateSamplesRoot, 'readme'),
+    sampleCodeFiles: [
+      '01-simple-state.mts',
+      '05-simple-state-with-additional-api.mts',
+    ],
+  },
+  {
+    mdPath: path.resolve(
+      docsRoot,
+      'src/content/docs/guides/react-integration.md',
+    ),
+    samplesDir: path.resolve(synstateSamplesRoot, 'readme'),
+    sampleCodeFiles: [
+      '02-synstate-react-hooks-example.tsx',
+      '03-react-18-example.tsx',
+      '06-global-counter.tsx',
+      '07-todo-reducer.tsx',
+      '08-dark-mode.tsx',
+      '09-cross-component.tsx',
+      '04-react-example.tsx',
+    ],
+  },
+  {
+    mdPath: path.resolve(docsRoot, 'src/content/docs/examples/index.md'),
+    samplesDir: path.resolve(synstateSamplesRoot, 'readme'),
+    sampleCodeFiles: [
+      '10-search-debounce.tsx',
+      '11-event-emitter-throttle.tsx',
+    ],
+  },
+  {
+    mdPath: path.resolve(
+      docsRoot,
+      'src/content/docs/guides/how-synstate-solved-the-glitch.md',
+    ),
+    samplesDir: path.resolve(
+      synstateSamplesRoot,
+      'how-synstate-solved-the-glitch',
+    ),
+    sampleCodeFiles: [
+      '01-simple-glitch-example.synstate.mts',
+      '01-simple-glitch-example.rxjs.mts',
+      '01-simple-glitch-example.mobx.mts',
+      '01-simple-glitch-example.jotai.mts',
+      '01-simple-glitch-example.redux.mts',
+      '01-simple-glitch-example.zustand.mts',
+    ],
+  },
+] as const;
+
+const embedExamples = async (): Promise<void> => {
+  for (const { mdPath, sampleCodeFiles, samplesDir } of documents) {
+    const markdownContent = await fs.readFile(mdPath, 'utf8');
+
+    const mut_results: string[] = [];
+
+    let mut_rest: string = markdownContent;
+
+    for (const sampleCodeFile of sampleCodeFiles) {
+      const samplePath = path.resolve(samplesDir, sampleCodeFile);
+
+      const sampleContent = await fs.readFile(samplePath, 'utf8');
+
+      const sampleContentSliced = extractSampleCode(sampleContent);
+
+      const codeBlockStartIndex = mut_rest.indexOf(codeBlockStart);
+
+      if (codeBlockStartIndex === -1) {
+        throw new Error(
+          `❌ codeBlockStart not found for ${sampleCodeFile} in ${mdPath}`,
+        );
+      }
+
+      const codeBlockEndIndex = mut_rest.indexOf(
+        codeBlockEnd,
+        codeBlockStartIndex + codeBlockStart.length,
+      );
+
+      if (codeBlockEndIndex === -1) {
+        throw new Error(
+          `❌ codeBlockEnd not found for ${sampleCodeFile} in ${mdPath}`,
+        );
+      }
+
+      const beforeBlock = mut_rest.slice(
+        0,
+        Math.max(0, codeBlockStartIndex + codeBlockStart.length),
+      );
+
+      const afterBlock = mut_rest.slice(Math.max(0, codeBlockEndIndex));
+
+      mut_results.push(beforeBlock, sampleContentSliced);
+
+      mut_rest = afterBlock;
+
+      console.log(`✓ Updated code block for ${sampleCodeFile}`);
+    }
+
+    mut_results.push(mut_rest);
+
+    await fs.writeFile(mdPath, mut_results.join('\n'), 'utf8');
+  }
+};
+
+const result = await embedExamples().catch((error: unknown) => error);
+
+if (result !== undefined) {
+  console.error(result);
+
+  process.exit(1);
+}
