@@ -18,6 +18,10 @@ export default [
     packageDirs: [import.meta.dirname, projectRootPath],
   }),
 
+  {
+    ignores: ['.astro/**'],
+  },
+
   eslintConfigForTsDataForge(),
 
   eslintConfigForVitest(),
@@ -38,6 +42,7 @@ export default [
             ...eslintImportsRules['import-x/no-internal-modules'][1].allow,
             'zustand/vanilla',
             'jotai/vanilla',
+            '@astrojs/**',
           ],
         },
       ],

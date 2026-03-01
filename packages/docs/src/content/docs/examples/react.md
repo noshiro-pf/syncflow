@@ -37,13 +37,7 @@ const Counter = (): React.JSX.Element => {
 
 // Component 2
 const ResetButton = (): React.JSX.Element => (
-    <button
-        onClick={() => {
-            resetState();
-        }}
-    >
-        {'Reset'}
-    </button>
+    <button onClick={resetState}>{'Reset'}</button>
 );
 ```
 

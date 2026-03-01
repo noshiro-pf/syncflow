@@ -14,6 +14,10 @@
     "lint": "eslint .",
     "lint:fix": "eslint . --fix",
     "preview": "astro preview",
+    "tsc": "tsc --noEmit",
+    "tscw": "tsc --noEmit --watch",
+    "type-check": "tsc --noEmit",
+    "update-packages": "pnpm update --latest",
     "z:prettier": "prettier --config ../../.prettierrc --ignore-path ../../.prettierignore --ignore-path ../../.gitignore --ignore-unknown --no-error-on-unmatched-pattern --write"
   },
   "dependencies": {
