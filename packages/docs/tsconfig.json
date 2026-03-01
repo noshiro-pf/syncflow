@@ -9,5 +9,12 @@
       "synstate-react-hooks": ["../synstate-react-hooks/src/index.mts"]
     }
   },
-  "include": ["./samples", "./src", "./test", "./scripts", "./configs"]
+  "include": [
+    ".astro",
+    "./samples",
+    "./src",
+    "./test",
+    "./scripts",
+    "./configs"
+  ]
 }
