@@ -30,9 +30,9 @@
 - 📡 **Event System**: Built-in `createValueEmitter`, `createEventEmitter` for event-driven architecture
 - 🔧 **Observable-based**: Built on Observable pattern similar to RxJS, but with a completely independent implementation from scratch — not a wrapper. Offers optional advanced features like operators (`map`, `filter`, `scan`, `debounce`) and combinators (`merge`, `combine`)
 
-<!-- ## Documentation
+## Documentation
 
-- API reference: TBD <https://noshiro-pf.github.io/synstate/> -->
+- <https://noshiro-pf.github.io/synstate/>
 
 ## Installation
 

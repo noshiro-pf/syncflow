@@ -22,7 +22,6 @@ export {
   isChildObservable,
   isManagerObservable,
   isRootObservable,
-  lastValueFrom,
   map,
   mapOptional,
   mapResultErr,

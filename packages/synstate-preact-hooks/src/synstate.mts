@@ -6,6 +6,7 @@ export {
   SyncChildObservableClass,
   attachIndex,
   audit,
+  collectToArray,
   combine,
   combineLatest,
   counter,

@@ -9,8 +9,20 @@ export default defineConfig({
       title: 'SynState',
       sidebar: [
         {
+          label: 'Getting Started',
+          autogenerate: { directory: 'getting-started' },
+        },
+        {
           label: 'Guides',
           autogenerate: { directory: 'guides' },
+        },
+        {
+          label: 'Examples',
+          autogenerate: { directory: 'examples' },
+        },
+        {
+          label: 'Reference',
+          autogenerate: { directory: 'reference' },
         },
       ],
     }),
