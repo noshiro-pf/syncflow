@@ -138,6 +138,9 @@ importers:
       argparse:
         specifier: ^2.0.1
         version: 2.0.1
+      esbuild:
+        specifier: ^0.27.3
+        version: 0.27.3
       jotai:
         specifier: ^2.12.5
         version: 2.18.0(@babel/core@7.29.0)(@babel/template@7.28.6)(@types/react@19.2.14)(react@19.2.4)
