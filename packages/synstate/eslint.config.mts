@@ -5,6 +5,7 @@ import {
   eslintConfigForTsDataForge,
   eslintConfigForTypeScript,
   eslintConfigForVitest,
+  eslintImportsRules,
   typescriptEslintRules,
   type FlatConfig,
 } from 'eslint-config-typed';
@@ -28,6 +29,15 @@ export default [
         {
           ...typescriptEslintRules['@typescript-eslint/no-shadow'][1],
           allow: ['Observable'],
+        },
+      ],
+      'import-x/no-internal-modules': [
+        'error',
+        {
+          allow: [
+            ...eslintImportsRules['import-x/no-internal-modules'][1].allow,
+            'zustand/vanilla',
+          ],
         },
       ],
     }),
