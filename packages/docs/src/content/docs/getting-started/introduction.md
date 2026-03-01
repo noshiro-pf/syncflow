@@ -29,7 +29,7 @@ For a detailed explanation of glitches and how SynState solves them, see [How Sy
 
 ## Quick Example
 
-`createState` creates a reactive state and a setter function. Subscribers are notified immediately with the initial value, and again whenever the state is updated.
+With a single call to `createState`, you can add global state to your application:
 
 ```tsx
 import { createState } from 'synstate';
@@ -45,6 +45,10 @@ state.subscribe((count) => {
 // Update state
 setState(1);
 ```
+
+`createState` creates a reactive state and a setter function. Subscribers are notified immediately with the initial value, and again whenever the state is updated.
+
+Although `createState` looks similar to React's `useState`, it is fundamentally different. The first element of the return value is -an `InitializedObservable<T>` object, not a plain value. `createState` does not work correctly inside React components (which are re-evaluated on every render) and must be called at the global scope.
 
 For more examples including React integration, see [Quick Start](/synstate/getting-started/quick-start/).
 

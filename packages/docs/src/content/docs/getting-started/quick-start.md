@@ -16,7 +16,7 @@ const stateHistory: number[] = [];
 
 // Subscribe to changes
 state.subscribe((count) => {
-    stateHistory.push(count);
+  stateHistory.push(count);
 });
 
 assert.deepStrictEqual(stateHistory, [0]);
@@ -34,30 +34,30 @@ import type * as React from 'react';
 import { createState } from 'synstate-react-hooks';
 
 const [useUserState, setUserState] = createState({
-    name: '',
-    email: '',
+  name: '',
+  email: '',
 });
 
 const UserProfile = (): React.JSX.Element => {
-    const user = useUserState();
+  const user = useUserState();
 
-    return (
-        <div>
-            <p>
-                {'Name: '}
-                {user.name}
-            </p>
-            <button
-                onClick={() => {
-                    setUserState({
-                        name: 'Alice',
-                        email: 'alice@example.com',
-                    });
-                }}
-            >
-                {'Set User'}
-            </button>
-        </div>
-    );
+  return (
+    <div>
+      <p>
+        {'Name: '}
+        {user.name}
+      </p>
+      <button
+        onClick={() => {
+          setUserState({
+            name: 'Alice',
+            email: 'alice@example.com',
+          });
+        }}
+      >
+        {'Set User'}
+      </button>
+    </div>
+  );
 };
 ```
