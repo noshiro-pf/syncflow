@@ -22,7 +22,7 @@ For a detailed explanation of glitches and how SynState solves them, see [How Sy
 - ⚡ **High Performance**: Optimized for fast state updates and minimal re-renders
 - 🎨 **Type-Safe**: Full TypeScript support with precise type inference
 - 🚀 **Lightweight**: <!-- bundle-size:synstate -->~4.2 kB min+gzip<!-- /bundle-size:synstate --> with only one external runtime dependency ([ts-data-forge](https://www.npmjs.com/package/ts-data-forge))
-- 🌐 **Framework Agnostic**: Works with React, Vue, Svelte, or vanilla JavaScript
+- 🌐 **Framework Agnostic**: Works with React, Vue, Angular, or vanilla JavaScript
 - 🔄 **Reactive Updates**: Automatic propagation of state changes to all subscribers
 - 📡 **Event System**: Built-in `createValueEmitter`, `createEventEmitter` for event-driven architecture
 - 🔧 **Observable-based**: Built on Observable pattern similar to RxJS, but with a completely independent implementation from scratch — not a wrapper. Offers optional advanced features like operators (`map`, `filter`, `scan`, `debounce`) and combinators (`merge`, `combine`)
@@ -39,7 +39,7 @@ const [state, setState] = createState(0);
 
 // Subscribe to changes
 state.subscribe((count) => {
-  console.log(count); // 0, 1
+    console.log(count); // 0, 1
 });
 
 // Update state
@@ -70,31 +70,31 @@ import type * as React from 'react';
 import { createState } from 'synstate-react-hooks';
 
 const [useUserState, setUserState] = createState({
-  name: '',
-  email: '',
+    name: '',
+    email: '',
 });
 
 const UserProfile = (): React.JSX.Element => {
-  const user = useUserState();
+    const user = useUserState();
 
-  return (
-    <div>
-      <p>
-        {'Name: '}
-        {user.name}
-      </p>
-      <button
-        onClick={() => {
-          setUserState({
-            name: 'Alice',
-            email: 'alice@example.com',
-          });
-        }}
-      >
-        {'Set User'}
-      </button>
-    </div>
-  );
+    return (
+        <div>
+            <p>
+                {'Name: '}
+                {user.name}
+            </p>
+            <button
+                onClick={() => {
+                    setUserState({
+                        name: 'Alice',
+                        email: 'alice@example.com',
+                    });
+                }}
+            >
+                {'Set User'}
+            </button>
+        </div>
+    );
 };
 ```
 
