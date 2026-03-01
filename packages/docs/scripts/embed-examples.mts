@@ -2,8 +2,6 @@ import 'ts-repo-utils';
 import { extractSampleCode } from './embed-examples-utils.mjs';
 import { workspaceRootPath } from './workspace-root-path.mjs';
 
-const docsSamplesRoot = path.resolve(workspaceRootPath, './samples');
-
 const synstateSamplesRoot = path.resolve(
   workspaceRootPath,
   '../synstate/samples',
@@ -27,7 +25,7 @@ const documents: DeepReadonly<
       workspaceRootPath,
       'src/content/docs/getting-started/introduction.md',
     ),
-    samplesDir: path.resolve(docsSamplesRoot, 'introduction'),
+    samplesDir: path.resolve(synstateSamplesRoot, 'docs-site/introduction'),
     sampleCodeFiles: [
       '01-simple-state.mts',
       '02-synstate-react-hooks-example.tsx',
@@ -75,7 +73,10 @@ const documents: DeepReadonly<
       workspaceRootPath,
       'src/content/docs/guides/how-synstate-solved-the-glitch.md',
     ),
-    samplesDir: path.resolve(docsSamplesRoot, 'how-synstate-solved-the-glitch'),
+    samplesDir: path.resolve(
+      synstateSamplesRoot,
+      'docs-site/how-synstate-solved-the-glitch',
+    ),
     sampleCodeFiles: [
       '01-simple-glitch-example.synstate.mts',
       '01-simple-glitch-example.rxjs.mts',
