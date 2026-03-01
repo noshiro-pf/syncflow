@@ -32,24 +32,18 @@ For a detailed explanation of glitches and how SynState solves them, see [How Sy
 `createState` creates a reactive state and a setter function. Subscribers are notified immediately with the initial value, and again whenever the state is updated.
 
 ```tsx
+import { createState } from 'synstate';
+
 // Create a reactive state
 const [state, setState] = createState(0);
-// type of state: InitializedObservable<number>
-// type of setState: (v: number) => number
-
-const stateHistory: number[] = [];
 
 // Subscribe to changes
 state.subscribe((count) => {
-    stateHistory.push(count);
+    console.log(count); // 0, 1
 });
-
-assert.deepStrictEqual(stateHistory, [0]);
 
 // Update state
 setState(1);
-
-assert.deepStrictEqual(stateHistory, [0, 1]);
 ```
 
 For more examples including React integration, see [Quick Start](/synstate/getting-started/quick-start/).

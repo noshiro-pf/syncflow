@@ -27,7 +27,7 @@ const documents: DeepReadonly<
       workspaceRootPath,
       'src/content/docs/getting-started/introduction.md',
     ),
-    samplesDir: path.resolve(synstateSamplesRoot, 'readme'),
+    samplesDir: path.resolve(docsSamplesRoot, 'introduction'),
     sampleCodeFiles: ['01-simple-state.mts'],
   },
   {
