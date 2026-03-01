@@ -48,9 +48,57 @@ setState(1);
 
 `createState` creates a reactive state and a setter function. Subscribers are notified immediately with the initial value, and again whenever the state is updated.
 
-Although `createState` looks similar to React's `useState`, it is fundamentally different. The first element of the return value is -an `InitializedObservable<T>` object, not a plain value. `createState` does not work correctly inside React components (which are re-evaluated on every render) and must be called at the global scope.
+Although `createState` looks similar to React's `useState`, it is fundamentally different. The first element of the return value is an `InitializedObservable<T>` — a specialized Observable provided by SynState that always holds an initial value — not a plain value. `createState` does not work correctly inside React components (which are re-evaluated on every render) and must be called at the global scope.
 
-For more examples including React integration, see [Quick Start](/synstate/getting-started/quick-start/).
+```ts
+import type * as React from 'react';
+import { createState } from 'synstate';
+
+// Create a reactive state
+
+const SomeComponent = (): React.JSX.Element => {
+    const [state, setState] = createState(0); // 🚫 Don't do this!!!
+
+    // ...
+};
+```
+
+To use it with React, you need to subscribe to the `InitializedObservable` inside your components — via `useSyncExternalStore` (React 18+) or `useState` + `useEffect` (React 17 and earlier). But don't worry: SynState provides `synstate-react-hooks`, a companion package that handles this for you. With it, you can introduce global state that is easily subscribable inside React components:
+
+```tsx
+import type * as React from 'react';
+import { createState } from 'synstate-react-hooks';
+
+const [useUserState, setUserState] = createState({
+    name: '',
+    email: '',
+});
+
+const UserProfile = (): React.JSX.Element => {
+    const user = useUserState();
+
+    return (
+        <div>
+            <p>
+                {'Name: '}
+                {user.name}
+            </p>
+            <button
+                onClick={() => {
+                    setUserState({
+                        name: 'Alice',
+                        email: 'alice@example.com',
+                    });
+                }}
+            >
+                {'Set User'}
+            </button>
+        </div>
+    );
+};
+```
+
+For more details, see [React Integration](/synstate/guides/react-integration/).
 
 ## Next Steps
 

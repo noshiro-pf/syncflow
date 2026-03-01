@@ -28,7 +28,7 @@ const documents: DeepReadonly<
       'src/content/docs/getting-started/introduction.md',
     ),
     samplesDir: path.resolve(docsSamplesRoot, 'introduction'),
-    sampleCodeFiles: ['01-simple-state.mts'],
+    sampleCodeFiles: ['01-simple-state.mts', '02-synstate-react-hooks-example.tsx'],
   },
   {
     mdPath: path.resolve(
