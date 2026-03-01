@@ -41,6 +41,9 @@ jobs:
         run: pnpm install --frozen-lockfile
 
       - name: Generate docs
+        run: pnpm --filter synstate run build
+
+      - name: Generate docs
         run: pnpm --filter @synstate/docs run build
 
       - name: Upload artifact
