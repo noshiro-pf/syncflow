@@ -50,6 +50,7 @@
     "codemod:full:readonly": "convert-to-readonly 'packages/*/{src,scripts}/**/*.{ts,mts}'",
     "codemod:uncommitted:as-const": "append-as-const --uncommitted 'packages/*/{src,scripts}/**/*.{ts,mts}'",
     "codemod:uncommitted:readonly": "convert-to-readonly --uncommitted 'packages/*/{src,scripts}/**/*.{ts,mts}'",
+    "doc": "pnpm --filter @synstate/docs run build",
     "cspell": "cspell \"**\" --gitignore --gitignore-root ./ --no-progress",
     "fmt": "format-uncommitted",
     "fmt:diff": "format-diff-from origin/main",
