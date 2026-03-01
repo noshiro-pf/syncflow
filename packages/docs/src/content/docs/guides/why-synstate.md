@@ -28,13 +28,12 @@ For a detailed explanation, see [How SynState Solved the Glitch](/synstate/guide
 
 **Use SynState when you need:**
 
-- Global state management across components
-- Event-driven communication between components
-- Type-safe event emitters
-- Redux-like state with reducers
-- Simple reactive patterns (debounce, throttle, etc.)
+- ✅ Global state management across components
+- ✅ Redux-like state with reducers
+- ✅ Simple reactive patterns (debounce, throttle, etc.)
+- ✅ Type-safe event emitters
+- ✅ Event-driven communication between components
 
 **Consider other solutions when:**
 
 - You only need a React component (local) state (use React hooks `useState`, `useReducer`)
-- Your app is simple enough for React Context alone

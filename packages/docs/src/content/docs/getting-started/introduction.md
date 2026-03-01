@@ -39,7 +39,7 @@ const [state, setState] = createState(0);
 
 // Subscribe to changes
 state.subscribe((count) => {
-    console.log(count); // 0, 1
+  console.log(count); // 0, 1
 });
 
 // Update state
@@ -70,33 +70,35 @@ import type * as React from 'react';
 import { createState } from 'synstate-react-hooks';
 
 const [useUserState, setUserState] = createState({
-    name: '',
-    email: '',
+  name: '',
+  email: '',
 });
 
 const UserProfile = (): React.JSX.Element => {
-    const user = useUserState();
+  const user = useUserState();
 
-    return (
-        <div>
-            <p>
-                {'Name: '}
-                {user.name}
-            </p>
-            <button
-                onClick={() => {
-                    setUserState({
-                        name: 'Alice',
-                        email: 'alice@example.com',
-                    });
-                }}
-            >
-                {'Set User'}
-            </button>
-        </div>
-    );
+  return (
+    <div>
+      <p>
+        {'Name: '}
+        {user.name}
+      </p>
+      <button
+        onClick={() => {
+          setUserState({
+            name: 'Alice',
+            email: 'alice@example.com',
+          });
+        }}
+      >
+        {'Set User'}
+      </button>
+    </div>
+  );
 };
 ```
+
+By using global state instead of React's `useState`, it becomes easy to hold application state that spans beyond a single component — such as [Dark Mode toggling](/synstate/examples/react/#boolean-state-dark-mode) or [Cross-Component Communication](/synstate/examples/react/#cross-component-communication).
 
 For more details, see [React Integration](/synstate/guides/react-integration/).
 
