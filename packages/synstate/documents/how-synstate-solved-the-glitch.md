@@ -121,6 +121,62 @@ assert.deepStrictEqual(result, [0, 1000, 1001, 2001, 2002, 3002, 3003]);
 |    6 |                   3 |                3000 |                     **3002** ✗ |   Glitch    |
 |    7 |                   3 |                3000 |                     **3003** ✓ |     Yes     |
 
+## What Happens in MobX (Glitch-Free)
+
+MobX takes a fundamentally different approach from RxJS. While RxJS is push-based (values are eagerly propagated to subscribers as soon as they change), MobX's `computed` values are **pull-based and lazily evaluated** — they are only recomputed when accessed.
+
+When `counter` changes:
+
+1. `multipliedCounter` and `sum` are both marked as "possibly stale"
+2. MobX schedules the `reaction` (subscriber) to run after the current action completes
+3. When the reaction runs, it accesses `sum`, which accesses `multipliedCounter`
+4. `multipliedCounter` is recomputed from the already-updated `counter`
+5. `sum` is then computed with both up-to-date values
+
+Because `computed` values are lazily evaluated at the time of access, MobX never observes an inconsistent intermediate state in this scenario.
+
+You can verify this behavior by running the MobX sample code in [`01-simple-glitch-example.mobx.mts`](../samples/how-synstate-solved-the-glitch/01-simple-glitch-example.mobx.mts).
+
+```tsx
+import { computed, observable, reaction, runInAction } from 'mobx';
+
+const state = observable({ counter: 0 });
+
+const multipliedCounter = computed(() => state.counter * 1000);
+// 0, 1000, 2000, 3000, ...
+
+const sum = computed(() => multipliedCounter.get() + state.counter);
+// 0, 1001, 2002, 3003, ... (glitch-free)
+
+const valueHistory: number[] = [];
+
+reaction(
+    () => sum.get(),
+    (value) => {
+        valueHistory.push(value);
+    },
+    { fireImmediately: true },
+);
+
+for (let i = 1; i <= 4; i++) {
+    runInAction(() => {
+        state.counter = i;
+    });
+}
+
+assert.deepStrictEqual(valueHistory, [0, 1001, 2002, 3003, 4004]);
+```
+
+### Comparison
+
+| Library  | Approach                 | Glitch-Free? | Output                                  |
+| :------- | :----------------------- | :----------: | :-------------------------------------- |
+| RxJS     | Push-based (eager)       |      No      | `0, 1000, 1001, 2001, 2002, 3002, 3003` |
+| MobX     | Pull-based (lazy)        |     Yes      | `0, 1001, 2002, 3003, 4004`             |
+| SynState | Push-based (glitch-free) |     Yes      | `0, 1001, 2002, 3003, 4004`             |
+
+MobX achieves glitch-free behavior through lazy evaluation of `computed` values. SynState achieves the same result with a push-based architecture — values are eagerly propagated, but the propagation is ordered so that all inputs to a combinator are updated before the combinator itself evaluates.
+
 ## What Happens in SynState (Glitch-Free)
 
 SynState solves this by ensuring that **all derived values update atomically within a single propagation cycle**. When `counterObservable` emits a new value, SynState does not immediately fire `combine`. Instead, it first propagates the update through the entire graph, updating `multipliedCounter` and marking `counterObservable`'s new value — and only after all inputs to `combine` are up-to-date does it evaluate `combine` and emit to `sum`.
