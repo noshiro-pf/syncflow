@@ -212,10 +212,8 @@ const sumAtom = atom((get) => get(multipliedAtom) + get(counterAtom));
 
 const store = createStore();
 
-const valueHistory: number[] = [];
-
 // Record initial value
-valueHistory.push(store.get(sumAtom));
+const valueHistory: number[] = [store.get(sumAtom)];
 
 // Subscribe to future changes
 store.sub(sumAtom, () => {

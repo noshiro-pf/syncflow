@@ -1,4 +1,3 @@
-/* eslint-disable import-x/no-extraneous-dependencies */
 // embed-sample-code-ignore-above
 
 import type * as React from 'react';

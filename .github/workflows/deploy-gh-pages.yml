@@ -4,6 +4,7 @@ on:
   push:
     branches:
       - main
+      - update-README # TODO: remove this line
 
   workflow_dispatch:
 

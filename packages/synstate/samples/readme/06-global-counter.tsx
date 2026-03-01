@@ -1,5 +1,4 @@
 /* eslint-disable @typescript-eslint/strict-void-return */
-/* eslint-disable import-x/no-extraneous-dependencies */
 // embed-sample-code-ignore-above
 import type * as React from 'react';
 import { createState } from 'synstate-react-hooks';
