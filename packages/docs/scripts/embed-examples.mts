@@ -62,13 +62,10 @@ const documents: DeepReadonly<
   },
   {
     mdPath: path.resolve(
-      docsSamplesRoot,
+      workspaceRootPath,
       'src/content/docs/guides/how-synstate-solved-the-glitch.md',
     ),
-    samplesDir: path.resolve(
-      synstateSamplesRoot,
-      'how-synstate-solved-the-glitch',
-    ),
+    samplesDir: path.resolve(docsSamplesRoot, 'how-synstate-solved-the-glitch'),
     sampleCodeFiles: [
       '01-simple-glitch-example.synstate.mts',
       '01-simple-glitch-example.rxjs.mts',

@@ -14,7 +14,7 @@ const stateHistory: number[] = [];
 
 // Subscribe to changes
 state.subscribe((count) => {
-    stateHistory.push(count);
+  stateHistory.push(count);
 });
 
 assert.deepStrictEqual(stateHistory, [0]);
@@ -32,7 +32,7 @@ assert.deepStrictEqual(stateHistory, [0, 1]);
 ```tsx
 // Create a reactive state
 const [state, setState, { updateState, resetState, getSnapshot }] =
-    createState(0);
+  createState(0);
 // type of state: InitializedObservable<number>
 // type of setState: (v: number) => number
 // type of updateState: (updater: (prev: number) => number) => number
@@ -43,7 +43,7 @@ const stateHistory: number[] = [];
 
 // Subscribe to changes
 state.subscribe((count) => {
-    stateHistory.push(count);
+  stateHistory.push(count);
 });
 
 assert.deepStrictEqual(stateHistory, [0]);
