@@ -1,5 +1,7 @@
 ---
 title: Why SynState?
+sidebar:
+  order: 1
 ---
 
 ## Simple to Start, Powerful When You Need It

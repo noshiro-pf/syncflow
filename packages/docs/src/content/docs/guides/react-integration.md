@@ -1,5 +1,7 @@
 ---
 title: React Integration
+sidebar:
+  order: 2
 ---
 
 SynState provides a companion package `synstate-react-hooks` for seamless React integration.

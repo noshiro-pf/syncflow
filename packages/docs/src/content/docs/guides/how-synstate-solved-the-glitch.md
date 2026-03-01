@@ -1,5 +1,7 @@
 ---
 title: How SynState Solved the Glitch
+sidebar:
+  order: 3
 ---
 
 ## What Is a Glitch?
