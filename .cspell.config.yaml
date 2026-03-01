@@ -1,12 +1,13 @@
-version: '0.2'
+version: "0.2"
 language: en
 allowCompoundWords: true
 caseSensitive: false
 ignoreRandomStrings: true
 words:
-  - nums
   - nargs
   - noshiro
+  - nums
+  - seti
   - synstate
   - testw
   - tscw

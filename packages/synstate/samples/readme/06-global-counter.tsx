@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/strict-void-return */
 /* eslint-disable import-x/no-extraneous-dependencies */
 // embed-sample-code-ignore-above
 import type * as React from 'react';
@@ -30,13 +31,7 @@ const Counter = (): React.JSX.Element => {
 
 // Component 2
 const ResetButton = (): React.JSX.Element => (
-  <button
-    onClick={() => {
-      resetState();
-    }}
-  >
-    {'Reset'}
-  </button>
+  <button onClick={resetState}>{'Reset'}</button>
 );
 
 // embed-sample-code-ignore-below
