@@ -2,9 +2,11 @@ import 'ts-repo-utils';
 import { extractSampleCode } from './embed-examples-utils.mjs';
 import { workspaceRootPath } from './workspace-root-path.mjs';
 
+const docsSamplesRoot = path.resolve(workspaceRootPath, './samples');
+
 const synstateSamplesRoot = path.resolve(
-  import.meta.dirname,
-  '../../synstate/samples',
+  workspaceRootPath,
+  '../synstate/samples',
 );
 
 const codeBlockStart = '```tsx';
@@ -60,7 +62,7 @@ const documents: DeepReadonly<
   },
   {
     mdPath: path.resolve(
-      workspaceRootPath,
+      docsSamplesRoot,
       'src/content/docs/guides/how-synstate-solved-the-glitch.md',
     ),
     samplesDir: path.resolve(
