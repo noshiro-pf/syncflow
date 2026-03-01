@@ -28,12 +28,12 @@ For a detailed explanation, see [How SynState Solved the Glitch](/synstate/guide
 
 **Use SynState when you need:**
 
-- ✅ Global state management across components
-- ✅ Redux-like state with reducers
-- ✅ Simple reactive patterns (debounce, throttle, etc.)
-- ✅ Type-safe event emitters
-- ✅ Event-driven communication between components
+- ✅ A small piece of global state shared across components (e.g., dark mode toggle, user session)
+- ✅ Complex asynchronous state management with operators like `debounce`, `throttle`, `switchMap`
+- ✅ Redux-like state with reducers (`createReducer`)
+- ✅ A project where the scale of state management is uncertain — SynState's unified API covers everything from a single shared counter to a full debounced search pipeline, so you never have to switch libraries as requirements grow
+- ✅ Type-safe event emitters (`createEventEmitter`)
 
 **Consider other solutions when:**
 
-- You only need a React component (local) state (use React hooks `useState`, `useReducer`)
+- You only need React component-local state (use React hooks `useState`, `useReducer`)
