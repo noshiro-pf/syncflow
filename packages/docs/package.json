@@ -4,7 +4,7 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "build": "pnpm run doc:embed && astro build",
+    "build": "pnpm run doc && astro build",
     "dev": "astro dev",
     "doc": "run-s doc:embed:bundle-size doc:embed fmt",
     "doc:embed": "tsx ./scripts/embed-examples.mts",
@@ -34,6 +34,8 @@
     "mobx": "^6.13.8",
     "react": "^19.2.4",
     "rxjs": "^7.8.2",
+    "synstate": "workspace:*",
+    "synstate-react-hooks": "workspace:*",
     "zustand": "^5.0.5"
   }
 }
